@@ -1,0 +1,3014 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HARMONIC GEOGRAPHIC — Sounds of the Unheard Earth</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================
+   DESIGN TOKENS
+   ============================================ */
+:root {
+  --charcoal: #1A1A1A;
+  --ink: #0D0D0D;
+  --mustard: #D4A017;
+  --mustard-dim: #A37D11;
+  --cream: #F4F0E8;
+  --cream-warm: #EBE4D3;
+  --navy: #1F3A5F;
+  --paper: #FAF7F0;
+  --line: rgba(26, 26, 26, 0.15);
+  --line-soft: rgba(26, 26, 26, 0.08);
+  --shadow: 0 30px 60px rgba(0,0,0,0.12);
+
+  --serif: 'Playfair Display', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  background: var(--paper);
+  color: var(--charcoal);
+  font-family: var(--sans);
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 종이 질감 노이즈 (배경) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.4;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(212,160,23,0.03) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' /%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+/* ============================================
+   PAGE TRANSITION
+   ============================================ */
+.page {
+  position: fixed;
+  inset: 0;
+  background: var(--paper);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 10;
+}
+.page.active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 20;
+}
+.page.exiting {
+  opacity: 0;
+  z-index: 15;
+}
+
+/* ============================================
+   HEADER (공통)
+   ============================================ */
+.masthead {
+  position: relative;
+  z-index: 5;
+  padding: 28px 48px 24px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.masthead-logo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.logo-frame {
+  display: inline-block;
+  background: var(--mustard);
+  padding: 8px 14px;
+  width: fit-content;
+}
+
+.logo-frame .logo-text {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  color: var(--charcoal);
+  line-height: 1;
+}
+
+.logo-frame .logo-sub {
+  font-family: var(--sans);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--charcoal);
+  margin-top: 3px;
+  line-height: 1;
+  text-align: center;
+}
+
+.masthead-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--charcoal);
+  text-align: right;
+  line-height: 1.7;
+  opacity: 0.8;
+}
+
+.masthead-meta .vol {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ============================================
+   MAIN PAGE — COVER
+   ============================================ */
+.cover {
+  padding: 60px 48px 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.cover-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--charcoal);
+}
+
+.cover-top-left {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--charcoal);
+  text-transform: uppercase;
+}
+
+.cover-top-right {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--charcoal);
+}
+
+.cover-title {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(72px, 11vw, 168px);
+  line-height: 0.86;
+  letter-spacing: -0.04em;
+  color: var(--charcoal);
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.cover-title .em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--mustard-dim);
+}
+
+.cover-subtitle {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(22px, 2.5vw, 32px);
+  font-weight: 400;
+  color: var(--charcoal);
+  margin-bottom: 56px;
+  opacity: 0.85;
+}
+
+/* HERO 영역 */
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 48px;
+  margin-bottom: 80px;
+  align-items: start;
+}
+
+.hero-image {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: linear-gradient(180deg, #0a1929 0%, #1F3A5F 40%, #0a1929 100%);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+/* 동굴 / 물방울 일러스트 (SVG) */
+.hero-illustration {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-caption {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--cream);
+  line-height: 1.7;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.hero-caption strong {
+  color: var(--mustard);
+  font-weight: 500;
+}
+
+.hero-text {
+  padding-top: 32px;
+}
+
+.hero-issue {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--mustard-dim);
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+
+.hero-headline {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(28px, 3.4vw, 44px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin-bottom: 28px;
+  color: var(--charcoal);
+}
+
+.hero-headline .punctum {
+  display: inline-block;
+  background: var(--mustard);
+  color: var(--charcoal);
+  padding: 0 8px;
+  font-style: italic;
+}
+
+.hero-body {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--charcoal);
+  margin-bottom: 32px;
+  max-width: 460px;
+}
+
+.hero-body p + p { margin-top: 16px; }
+
+.hero-byline {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--charcoal);
+  opacity: 0.6;
+  text-transform: uppercase;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+/* ============================================
+   THESIS SECTION (왜 자연인가)
+   ============================================ */
+.thesis {
+  padding: 80px 0;
+  border-top: 1px solid var(--charcoal);
+  border-bottom: 1px solid var(--charcoal);
+  margin-bottom: 80px;
+}
+
+.thesis-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--mustard-dim);
+  margin-bottom: 32px;
+  text-transform: uppercase;
+}
+
+.thesis-quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(28px, 4vw, 56px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--charcoal);
+  max-width: 1100px;
+}
+
+.thesis-quote .accent {
+  color: var(--mustard-dim);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.thesis-author {
+  margin-top: 32px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--charcoal);
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+/* ============================================
+   MEMBER LINEUP (도감 그리드)
+   ============================================ */
+.lineup-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  align-items: baseline;
+  margin-bottom: 48px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid var(--charcoal);
+}
+
+.lineup-number {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 84px;
+  line-height: 0.9;
+  color: var(--charcoal);
+  letter-spacing: -0.04em;
+}
+
+.lineup-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--charcoal);
+}
+
+.lineup-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--charcoal);
+  text-transform: uppercase;
+  text-align: right;
+  opacity: 0.7;
+}
+
+.lineup-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+  margin-bottom: 80px;
+}
+
+.member-card {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.member-card:hover {
+  transform: translateY(-6px);
+}
+
+.member-card.disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.member-card.disabled:hover { transform: none; }
+
+.member-card.disabled::after {
+  content: 'COMING SOON';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--charcoal);
+  color: var(--mustard);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 2px;
+  padding: 4px 8px;
+  z-index: 3;
+}
+
+.member-visual {
+  aspect-ratio: 3 / 4;
+  background: var(--charcoal);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+}
+
+.member-visual svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.member-visual .pin {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: var(--mustard);
+  color: var(--charcoal);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  padding: 3px 8px;
+}
+
+.member-card:hover .member-visual .pin {
+  background: var(--cream);
+}
+
+.member-info {
+  padding: 0 2px;
+}
+
+.member-codename {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.1;
+  color: var(--charcoal);
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+}
+
+.member-binomial {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 11px;
+  color: var(--mustard-dim);
+  margin-bottom: 10px;
+}
+
+.member-stats {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--charcoal);
+  line-height: 1.7;
+  opacity: 0.75;
+}
+
+.member-stats .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.member-stats .row:last-child { border-bottom: none; }
+
+.member-stats .k { opacity: 0.6; }
+
+/* ============================================
+   FOOTER (메인)
+   ============================================ */
+.colophon {
+  border-top: 1px solid var(--charcoal);
+  padding: 40px 48px 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 48px;
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.colophon-block h4 {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--mustard-dim);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.colophon-block p,
+.colophon-block li {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--charcoal);
+  list-style: none;
+}
+
+.colophon-block .signature {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--charcoal);
+}
+
+/* ============================================
+   DETAIL PAGE (멤버 상세)
+   ============================================ */
+.detail-nav {
+  position: sticky;
+  top: 0;
+  background: var(--paper);
+  z-index: 30;
+  padding: 18px 48px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--charcoal);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  transition: color 0.3s;
+}
+
+.back-btn:hover { color: var(--mustard-dim); }
+
+.back-btn svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s;
+}
+
+.back-btn:hover svg {
+  transform: translateX(-4px);
+}
+
+.detail-crumb {
+  display: flex;
+  gap: 12px;
+  opacity: 0.6;
+}
+
+.detail-crumb .sep { opacity: 0.5; }
+
+.detail-hero {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  min-height: 75vh;
+}
+
+.detail-hero-visual {
+  background: linear-gradient(180deg, #0a1929 0%, #1F3A5F 50%, #0a1929 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.detail-hero-visual svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.detail-hero-overlay {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  right: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.detail-folio {
+  background: var(--mustard);
+  color: var(--charcoal);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  padding: 6px 12px;
+}
+
+.detail-coord-pill {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--cream);
+  text-align: right;
+  line-height: 1.7;
+  opacity: 0.9;
+}
+
+.detail-hero-caption {
+  position: absolute;
+  bottom: 32px;
+  left: 32px;
+  right: 32px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--cream);
+  line-height: 1.7;
+  text-transform: uppercase;
+  opacity: 0.85;
+  padding-top: 16px;
+  border-top: 1px solid rgba(244,240,232,0.3);
+}
+
+.detail-hero-text {
+  padding: 60px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.detail-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--mustard-dim);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.detail-codename {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: clamp(64px, 8vw, 120px);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  color: var(--charcoal);
+  margin-bottom: 16px;
+}
+
+.detail-binomial {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--mustard-dim);
+  margin-bottom: 32px;
+}
+
+.detail-dek {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.45;
+  color: var(--charcoal);
+  max-width: 460px;
+  letter-spacing: -0.005em;
+}
+
+/* META BAR */
+.meta-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 24px 56px;
+  background: var(--charcoal);
+  color: var(--cream);
+  gap: 32px;
+}
+
+.meta-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.meta-cell .label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--mustard);
+  text-transform: uppercase;
+}
+
+.meta-cell .value {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.meta-cell .value .unit {
+  font-family: var(--mono);
+  font-size: 11px;
+  opacity: 0.7;
+  margin-left: 4px;
+}
+
+/* ARTICLE BODY */
+.detail-article {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 56px;
+}
+
+.article-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 64px;
+  margin-bottom: 80px;
+  /* sticky의 작동 범위를 이 그리드 안으로 제한 */
+  position: relative;
+}
+
+.article-side {
+  position: sticky;
+  top: 100px;
+  align-self: start;
+  /* 아래 섹션으로 비치지 않게 */
+  z-index: 1;
+}
+
+.side-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--mustard-dim);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.side-figure {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 96px;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--charcoal);
+  margin-bottom: 16px;
+}
+
+.side-caption {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--charcoal);
+  opacity: 0.75;
+  max-width: 240px;
+}
+
+.article-main h2 {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin-bottom: 24px;
+  color: var(--charcoal);
+}
+
+.article-main h3 {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  color: var(--mustard-dim);
+  margin-top: 40px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.article-main p {
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 18px;
+  color: var(--charcoal);
+}
+
+.article-main p:first-of-type::first-letter {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 84px;
+  line-height: 0.85;
+  float: left;
+  margin: 4px 12px 0 0;
+  color: var(--mustard-dim);
+}
+
+.article-main blockquote {
+  border-left: 3px solid var(--mustard);
+  padding: 8px 0 8px 24px;
+  margin: 32px 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.45;
+  color: var(--charcoal);
+}
+
+/* DATA VIS */
+.data-section {
+  margin: 80px 0;
+  padding: 56px 48px;
+  background: var(--charcoal);
+  color: var(--cream);
+  position: relative;
+}
+
+.data-section h2 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 8px;
+  color: var(--mustard);
+}
+
+.data-section .sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--cream);
+  opacity: 0.6;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+}
+
+.waveform {
+  width: 100%;
+  height: 100px;
+  display: block;
+}
+
+.waveform-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  opacity: 0.6;
+}
+
+/* MAP */
+.map-section {
+  margin: 80px 0;
+}
+
+.map-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  margin-bottom: 32px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.map-header h2 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--charcoal);
+}
+
+.map-header .meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--charcoal);
+  opacity: 0.6;
+  text-transform: uppercase;
+}
+
+.world-map {
+  width: 100%;
+  height: auto;
+  background: var(--cream-warm);
+  border: 1px solid var(--line);
+  display: block;
+}
+
+.map-legend {
+  display: flex;
+  gap: 32px;
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--charcoal);
+  opacity: 0.7;
+  text-transform: uppercase;
+  flex-wrap: wrap;
+}
+
+.map-legend .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mustard);
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.map-legend .dot.active {
+  background: var(--navy);
+  box-shadow: 0 0 0 4px rgba(31,58,95,0.2);
+}
+
+/* SPECIMEN PANEL */
+.specimen {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-bottom: 80px;
+}
+
+.specimen-cell {
+  background: var(--paper);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.specimen-cell .num {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 48px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--mustard-dim);
+}
+
+.specimen-cell .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--charcoal);
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.specimen-cell .desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--charcoal);
+  margin-top: 4px;
+  opacity: 0.85;
+}
+
+/* NEXT / PREV */
+.detail-end {
+  border-top: 1px solid var(--charcoal);
+  padding: 48px 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.next-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 24px;
+  color: var(--charcoal);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: gap 0.3s;
+}
+
+.next-link:hover { gap: 20px; color: var(--mustard-dim); }
+
+.next-link .num {
+  font-family: var(--mono);
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--mustard-dim);
+  margin-right: 8px;
+}
+
+/* ============================================
+   ENTRY ANIMATIONS
+   ============================================ */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page.active .anim {
+  animation: riseIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.page.active .anim-1 { animation-delay: 0.1s; }
+.page.active .anim-2 { animation-delay: 0.2s; }
+.page.active .anim-3 { animation-delay: 0.3s; }
+.page.active .anim-4 { animation-delay: 0.4s; }
+.page.active .anim-5 { animation-delay: 0.5s; }
+.page.active .anim-6 { animation-delay: 0.6s; }
+
+/* 물방울 애니메이션 */
+@keyframes drop {
+  0% { transform: translateY(-30px); opacity: 0; }
+  20% { opacity: 1; }
+  85% { transform: translateY(120px); opacity: 1; }
+  100% { transform: translateY(140px); opacity: 0; }
+}
+
+@keyframes ripple {
+  0% { r: 0; opacity: 0; stroke-width: 2; }
+  30% { opacity: 0.9; }
+  100% { r: 40; opacity: 0; stroke-width: 0.3; }
+}
+
+.drop-anim {
+  animation: drop 3.6s cubic-bezier(0.55, 0.05, 0.9, 0.55) infinite;
+}
+
+.ripple-anim {
+  animation: ripple 3.6s ease-out infinite;
+}
+
+.ripple-anim.r2 { animation-delay: 0.4s; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .masthead { padding: 20px 24px 16px; }
+  .cover, .colophon { padding: 32px 24px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+  .lineup-grid { grid-template-columns: 1fr 1fr; }
+  .detail-hero { grid-template-columns: 1fr; }
+  .detail-hero-visual { min-height: 50vh; }
+  .detail-hero-text { padding: 40px 24px; }
+  .meta-bar { grid-template-columns: 1fr 1fr; padding: 20px 24px; gap: 18px; }
+  .detail-article { padding: 48px 24px; }
+  .article-grid { grid-template-columns: 1fr; gap: 32px; }
+  .article-side { position: static; }
+  .colophon { grid-template-columns: 1fr; gap: 32px; }
+  .specimen { grid-template-columns: 1fr; }
+  .data-section { padding: 32px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     PAGE 1 — MAIN (COVER)
+     ============================================ -->
+<div class="page active" id="page-main">
+
+  <!-- 마스트헤드 -->
+  <header class="masthead">
+    <div class="masthead-logo">
+      <div class="logo-frame">
+        <div class="logo-text">HARMONIC</div>
+        <div class="logo-sub">GEOGRAPHIC</div>
+      </div>
+    </div>
+    <div class="masthead-meta">
+      <span class="vol">Volume I · Folio N°001</span>
+      MAY 2026 · ARCHIVE EDITION<br>
+      SOUNDS OF THE UNHEARD EARTH
+    </div>
+  </header>
+
+  <!-- 커버 -->
+  <main class="cover">
+
+    <!-- TOP BAR -->
+    <div class="cover-top">
+      <div class="cover-top-left">INAUGURAL ISSUE · 五 SUBJECTS</div>
+      <div class="cover-top-right">— A field record of non-human voices —</div>
+    </div>
+
+    <!-- TITLE -->
+    <h1 class="cover-title anim anim-1">
+      Sounds of the<br>
+      <span class="em">Unheard</span> Earth.
+    </h1>
+    <p class="cover-subtitle anim anim-2">
+      An ensemble of five organisms that each speak only once.
+    </p>
+
+    <!-- HERO -->
+    <section class="hero-grid">
+      <div class="hero-image anim anim-3">
+        <svg class="hero-illustration" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="hero-light" cx="50%" cy="20%" r="60%">
+              <stop offset="0%" stop-color="#D4A017" stop-opacity="0.35"/>
+              <stop offset="50%" stop-color="#1F3A5F" stop-opacity="0.1"/>
+              <stop offset="100%" stop-color="#0a1929" stop-opacity="1"/>
+            </radialGradient>
+            <linearGradient id="stalac" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4a3a25"/>
+              <stop offset="100%" stop-color="#1a1208"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Background gradient -->
+          <rect width="400" height="500" fill="url(#hero-light)"/>
+
+          <!-- Light beam from top -->
+          <polygon points="180,0 220,0 240,140 160,140" fill="#D4A017" opacity="0.08"/>
+          <polygon points="190,0 210,0 220,140 180,140" fill="#F4F0E8" opacity="0.06"/>
+
+          <!-- Dust particles -->
+          <g opacity="0.5">
+            <circle cx="180" cy="80" r="1" fill="#F4F0E8" opacity="0.7"/>
+            <circle cx="220" cy="120" r="0.8" fill="#F4F0E8" opacity="0.5"/>
+            <circle cx="200" cy="100" r="1.2" fill="#F4F0E8" opacity="0.8"/>
+            <circle cx="165" cy="160" r="0.6" fill="#F4F0E8" opacity="0.6"/>
+            <circle cx="235" cy="200" r="0.9" fill="#F4F0E8" opacity="0.5"/>
+            <circle cx="190" cy="220" r="0.7" fill="#F4F0E8" opacity="0.7"/>
+          </g>
+
+          <!-- Stalactites from top -->
+          <path d="M 0,0 L 0,40 L 30,20 L 60,80 L 90,30 L 120,90 L 150,40 L 175,120 L 180,140 L 220,140 L 225,110 L 250,40 L 290,80 L 320,25 L 360,65 L 400,30 L 400,0 Z" fill="url(#stalac)"/>
+
+          <!-- Main central stalactite -->
+          <path d="M 185,140 L 215,140 L 210,180 L 205,210 L 200,240 L 196,260 L 200,275 Z" fill="url(#stalac)"/>
+
+          <!-- Animated water drop -->
+          <circle class="drop-anim" cx="200" cy="280" r="3.5" fill="#D4A017" opacity="0.9"/>
+
+          <!-- Pool at bottom -->
+          <ellipse cx="200" cy="420" rx="120" ry="14" fill="#0a1929" opacity="0.8"/>
+          <ellipse cx="200" cy="418" rx="120" ry="12" fill="#1F3A5F" opacity="0.4"/>
+
+          <!-- Ripples (animated) -->
+          <circle class="ripple-anim" cx="200" cy="418" r="0" fill="none" stroke="#D4A017" stroke-width="1.5" opacity="0"/>
+          <circle class="ripple-anim r2" cx="200" cy="418" r="0" fill="none" stroke="#F4F0E8" stroke-width="1" opacity="0"/>
+
+          <!-- Cave walls (sides) -->
+          <path d="M 0,200 L 0,500 L 60,500 L 50,460 L 30,400 L 45,340 L 20,280 L 0,200 Z" fill="#0a1929" opacity="0.85"/>
+          <path d="M 400,200 L 400,500 L 340,500 L 350,440 L 380,380 L 360,320 L 385,260 L 400,200 Z" fill="#0a1929" opacity="0.85"/>
+
+          <!-- Ground -->
+          <path d="M 0,430 Q 100,440 200,432 T 400,430 L 400,500 L 0,500 Z" fill="#0a1929"/>
+        </svg>
+
+        <div class="hero-caption">
+          <strong>FIG. 01</strong> — Subterranean acoustic chamber<br>
+          Hang Sơn Đoòng, Vietnam · 22.347°N 106.284°E<br>
+          Estimated formation: 47,000 BP
+        </div>
+      </div>
+
+      <div class="hero-text anim anim-4">
+        <div class="hero-issue">— THE INAUGURAL DISPATCH</div>
+        <h2 class="hero-headline">
+          On Earth, certain organisms have been performing
+          for tens of thousands of years
+          <span class="punctum">without an audience.</span>
+        </h2>
+        <div class="hero-body">
+          <p>HARMONIC GEOGRAPHIC는 음악 단체이지만, 오디션을 보지 않는다. 우리는 그저 지구 위에서 가장 오래, 가장 정직하게 노래해온 비인간 존재들을 찾아낼 뿐이다.</p>
+          <p>각 멤버는 한 가지 소리만 낸다. 그 소리는 우리가 작곡한 것이 아니라, 47,000년의 시간이 작곡한 것이다.</p>
+          <p>이것은 그들의 첫 도감이다.</p>
+        </div>
+        <div class="hero-byline">
+          <span>EDITED BY  HG-001</span>
+          <span>·</span>
+          <span>EST. 2026</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- THESIS -->
+    <section class="thesis">
+      <div class="thesis-label">— Editorial Statement</div>
+      <p class="thesis-quote">
+        We do not <span class="accent">compose</span>.<br>
+        We <span class="accent">discover</span>, <span class="accent">document</span>,<br>
+        and ensemble the sounds<br>
+        that the Earth has been making alone.
+      </p>
+      <div class="thesis-author">— HARMONIC GEOGRAPHIC, founding charter</div>
+    </section>
+
+    <!-- LINEUP -->
+    <section>
+      <div class="lineup-header">
+        <div class="lineup-number">五</div>
+        <div class="lineup-title">Five Voices, One Geography</div>
+        <div class="lineup-meta">VOLUME I<br>FIELD CATALOG</div>
+      </div>
+
+      <div class="lineup-grid">
+
+        <!-- MEMBER 1: DRIP (ACTIVE) -->
+        <div class="member-card anim anim-1" onclick="goToDetail('drip')">
+          <div class="member-visual">
+            <span class="pin">N°001</span>
+            <svg viewBox="0 0 240 320" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="m1-bg" cx="50%" cy="30%" r="70%">
+                  <stop offset="0%" stop-color="#1F3A5F" stop-opacity="0.8"/>
+                  <stop offset="100%" stop-color="#0a1929"/>
+                </radialGradient>
+              </defs>
+              <rect width="240" height="320" fill="url(#m1-bg)"/>
+              <!-- Light shaft -->
+              <polygon points="105,0 135,0 145,90 95,90" fill="#D4A017" opacity="0.1"/>
+              <!-- Stalactite -->
+              <path d="M 110,0 L 130,0 L 128,30 L 125,60 L 122,90 L 119,115 L 122,128 Z" fill="#3a2a18"/>
+              <!-- Drop -->
+              <ellipse cx="120" cy="140" rx="4" ry="6" fill="#D4A017"/>
+              <!-- Pool -->
+              <ellipse cx="120" cy="280" rx="80" ry="8" fill="#0a1929"/>
+              <ellipse cx="120" cy="278" rx="80" ry="6" fill="#1F3A5F" opacity="0.5"/>
+              <!-- Ripple -->
+              <circle cx="120" cy="278" r="20" fill="none" stroke="#D4A017" stroke-width="0.8" opacity="0.4"/>
+              <circle cx="120" cy="278" r="32" fill="none" stroke="#D4A017" stroke-width="0.5" opacity="0.2"/>
+            </svg>
+          </div>
+          <div class="member-info">
+            <div class="member-codename">DRIP</div>
+            <div class="member-binomial">Subterranean Hydroacoustic Pulse</div>
+            <div class="member-stats">
+              <div class="row"><span class="k">LOC</span><span>SƠN ĐOÒNG, VN</span></div>
+              <div class="row"><span class="k">FREQ</span><span>880 Hz</span></div>
+              <div class="row"><span class="k">ROLE</span><span>TEMPO</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEMBER 2: LEVIATHAN -->
+        <div class="member-card anim anim-2" onclick="goToDetail('leviathan')">
+          <div class="member-visual">
+            <span class="pin">N°002</span>
+            <svg viewBox="0 0 240 320" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="m2-bg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1F3A5F"/>
+                  <stop offset="60%" stop-color="#0a1929"/>
+                  <stop offset="100%" stop-color="#000"/>
+                </linearGradient>
+              </defs>
+              <rect width="240" height="320" fill="url(#m2-bg)"/>
+              <!-- Whale silhouette -->
+              <path d="M 30,180 Q 50,160 90,165 Q 130,160 170,175 Q 200,180 215,195 Q 200,200 195,205 L 215,215 Q 200,220 180,218 Q 140,225 90,220 Q 50,215 30,200 Z" fill="#0a1929"/>
+              <path d="M 215,195 L 235,170 L 230,200 Z" fill="#0a1929"/>
+              <!-- Sound waves -->
+              <path d="M 50,260 Q 70,250 90,260 T 130,260 T 170,260 T 210,260" stroke="#D4A017" stroke-width="1" fill="none" opacity="0.4"/>
+              <path d="M 50,275 Q 70,265 90,275 T 130,275 T 170,275 T 210,275" stroke="#D4A017" stroke-width="0.6" fill="none" opacity="0.25"/>
+              <!-- Bubbles -->
+              <circle cx="60" cy="100" r="1.5" fill="#F4F0E8" opacity="0.4"/>
+              <circle cx="80" cy="80" r="1" fill="#F4F0E8" opacity="0.3"/>
+              <circle cx="170" cy="90" r="1.2" fill="#F4F0E8" opacity="0.35"/>
+            </svg>
+          </div>
+          <div class="member-info">
+            <div class="member-codename">LEVIATHAN</div>
+            <div class="member-binomial">Blue Whale, 52 Hz Solitary Call</div>
+            <div class="member-stats">
+              <div class="row"><span class="k">LOC</span><span>NORTH PACIFIC</span></div>
+              <div class="row"><span class="k">FREQ</span><span>52 Hz</span></div>
+              <div class="row"><span class="k">ROLE</span><span>BASS</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEMBER 3: CRICKET CHOIR -->
+        <div class="member-card anim anim-3" onclick="goToDetail('cricket')">
+          <div class="member-visual">
+            <span class="pin">N°003</span>
+            <svg viewBox="0 0 240 320" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="m3-bg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1a3a2a"/>
+                  <stop offset="100%" stop-color="#0a1a10"/>
+                </linearGradient>
+              </defs>
+              <rect width="240" height="320" fill="url(#m3-bg)"/>
+              <!-- Foliage silhouette -->
+              <path d="M 0,200 Q 30,170 60,190 Q 90,160 120,180 Q 150,160 180,185 Q 210,165 240,195 L 240,320 L 0,320 Z" fill="#0a1a10"/>
+              <!-- Cricket dots cluster -->
+              <g opacity="0.7">
+                <circle cx="80" cy="120" r="2" fill="#D4A017"/>
+                <circle cx="120" cy="110" r="2" fill="#D4A017"/>
+                <circle cx="160" cy="125" r="2" fill="#D4A017"/>
+                <circle cx="100" cy="140" r="1.5" fill="#D4A017"/>
+                <circle cx="140" cy="135" r="1.5" fill="#D4A017"/>
+                <circle cx="60" cy="135" r="1.5" fill="#D4A017"/>
+                <circle cx="180" cy="115" r="1.5" fill="#D4A017"/>
+              </g>
+              <!-- Connecting lines -->
+              <g stroke="#D4A017" stroke-width="0.4" fill="none" opacity="0.3">
+                <line x1="80" y1="120" x2="120" y2="110"/>
+                <line x1="120" y1="110" x2="160" y2="125"/>
+                <line x1="100" y1="140" x2="140" y2="135"/>
+                <line x1="60" y1="135" x2="100" y2="140"/>
+              </g>
+            </svg>
+          </div>
+          <div class="member-info">
+            <div class="member-codename">CRICKET CHOIR</div>
+            <div class="member-binomial">Orthopteran Stridulation Cluster</div>
+            <div class="member-stats">
+              <div class="row"><span class="k">LOC</span><span>MONTEVERDE, CR</span></div>
+              <div class="row"><span class="k">FREQ</span><span>4.5 kHz</span></div>
+              <div class="row"><span class="k">ROLE</span><span>TEXTURE</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEMBER 4: HOWL -->
+        <div class="member-card anim anim-4" onclick="goToDetail('howl')">
+          <div class="member-visual">
+            <span class="pin">N°004</span>
+            <svg viewBox="0 0 240 320" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="m4-bg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#2a3540"/>
+                  <stop offset="100%" stop-color="#0f1518"/>
+                </linearGradient>
+              </defs>
+              <rect width="240" height="320" fill="url(#m4-bg)"/>
+              <!-- Moon -->
+              <circle cx="180" cy="80" r="28" fill="#F4F0E8" opacity="0.85"/>
+              <circle cx="173" cy="75" r="3" fill="#1F3A5F" opacity="0.2"/>
+              <circle cx="188" cy="88" r="2" fill="#1F3A5F" opacity="0.15"/>
+              <!-- Wolf silhouette -->
+              <path d="M 90,260 L 100,240 L 95,200 L 100,180 L 95,160 L 105,145 L 115,150 L 120,160 L 135,155 L 142,165 L 145,180 L 150,200 L 155,230 L 152,260 Z" fill="#0a0e10"/>
+              <!-- Mountains -->
+              <path d="M 0,280 L 60,220 L 100,260 L 160,210 L 200,250 L 240,230 L 240,320 L 0,320 Z" fill="#0a0e10" opacity="0.8"/>
+            </svg>
+          </div>
+          <div class="member-info">
+            <div class="member-codename">HOWL</div>
+            <div class="member-binomial">Lupine Vocal, Boreal Forest</div>
+            <div class="member-stats">
+              <div class="row"><span class="k">LOC</span><span>YUKON, CA</span></div>
+              <div class="row"><span class="k">FREQ</span><span>380 Hz</span></div>
+              <div class="row"><span class="k">ROLE</span><span>VOCAL</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEMBER 5: RUPTURE -->
+        <div class="member-card anim anim-5" onclick="goToDetail('rupture')">
+          <div class="member-visual">
+            <span class="pin">N°005</span>
+            <svg viewBox="0 0 240 320" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="m5-bg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#a8c8d8"/>
+                  <stop offset="100%" stop-color="#3a5a70"/>
+                </linearGradient>
+              </defs>
+              <rect width="240" height="320" fill="url(#m5-bg)"/>
+              <!-- Glacier cracks -->
+              <g stroke="#1F3A5F" stroke-width="1" fill="none" opacity="0.5">
+                <path d="M 50,80 L 80,150 L 60,200 L 100,260"/>
+                <path d="M 130,60 L 150,140 L 130,200 L 160,270"/>
+                <path d="M 180,90 L 200,160 L 180,220"/>
+              </g>
+              <!-- Ice mass -->
+              <polygon points="0,180 60,140 120,170 180,150 240,180 240,320 0,320" fill="#D8E8F0" opacity="0.7"/>
+              <polygon points="0,200 50,170 100,195 160,175 220,200 240,195 240,320 0,320" fill="#A8C8D8" opacity="0.5"/>
+              <!-- Crack highlight -->
+              <path d="M 110,200 L 115,250 L 108,290" stroke="#1F3A5F" stroke-width="1.5" fill="none"/>
+            </svg>
+          </div>
+          <div class="member-info">
+            <div class="member-codename">RUPTURE</div>
+            <div class="member-binomial">Glacial Calving Impact</div>
+            <div class="member-stats">
+              <div class="row"><span class="k">LOC</span><span>SVALBARD, NO</span></div>
+              <div class="row"><span class="k">FREQ</span><span>40 Hz</span></div>
+              <div class="row"><span class="k">ROLE</span><span>IMPACT</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- COLOPHON (꼬리말) -->
+  <footer class="colophon">
+    <div class="colophon-block">
+      <h4>— PUBLICATION</h4>
+      <p>HARMONIC GEOGRAPHIC is an experimental music collective composed of five non-human voices, each representing a single sound from a single place on Earth.</p>
+    </div>
+    <div class="colophon-block">
+      <h4>— METHOD</h4>
+      <p>We do not record performers. We document phenomena that have been audible to no one for millennia, and arrange them into ensembles.</p>
+    </div>
+    <div class="colophon-block">
+      <h4>— EDITORIAL</h4>
+      <p class="signature">— Vol. I, Folio N°001<br>An archival edition for HG-001.</p>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ============================================
+     PAGE 2 — DRIP DETAIL
+     ============================================ -->
+<div class="page" id="page-drip">
+
+  <!-- DETAIL NAV -->
+  <nav class="detail-nav">
+    <button class="back-btn" onclick="goToMain()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M5 12L12 19M5 12L12 5"/></svg>
+      RETURN TO COVER
+    </button>
+    <div class="detail-crumb">
+      <span>HARMONIC GEOGRAPHIC</span>
+      <span class="sep">/</span>
+      <span>VOL. I</span>
+      <span class="sep">/</span>
+      <span>FOLIO N°001</span>
+    </div>
+  </nav>
+
+  <!-- DETAIL HERO -->
+  <section class="detail-hero">
+    <div class="detail-hero-visual">
+      <svg viewBox="0 0 600 750" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="d-hero-light" cx="50%" cy="15%" r="60%">
+            <stop offset="0%" stop-color="#D4A017" stop-opacity="0.4"/>
+            <stop offset="50%" stop-color="#1F3A5F" stop-opacity="0.1"/>
+            <stop offset="100%" stop-color="#0a1929" stop-opacity="1"/>
+          </radialGradient>
+          <linearGradient id="d-stalac" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#5a4530"/>
+            <stop offset="100%" stop-color="#1a1208"/>
+          </linearGradient>
+        </defs>
+
+        <rect width="600" height="750" fill="url(#d-hero-light)"/>
+
+        <!-- Light beam -->
+        <polygon points="270,0 330,0 360,200 240,200" fill="#D4A017" opacity="0.1"/>
+        <polygon points="285,0 315,0 330,200 270,200" fill="#F4F0E8" opacity="0.08"/>
+
+        <!-- Dust -->
+        <g opacity="0.6">
+          <circle cx="280" cy="120" r="1.5" fill="#F4F0E8" opacity="0.7"/>
+          <circle cx="320" cy="180" r="1" fill="#F4F0E8" opacity="0.5"/>
+          <circle cx="300" cy="150" r="1.8" fill="#F4F0E8" opacity="0.8"/>
+          <circle cx="265" cy="240" r="0.9" fill="#F4F0E8" opacity="0.6"/>
+          <circle cx="335" cy="300" r="1.3" fill="#F4F0E8" opacity="0.5"/>
+          <circle cx="290" cy="320" r="1" fill="#F4F0E8" opacity="0.7"/>
+          <circle cx="350" cy="250" r="0.8" fill="#F4F0E8" opacity="0.4"/>
+        </g>
+
+        <!-- Stalactite ceiling -->
+        <path d="M 0,0 L 0,60 L 45,30 L 90,120 L 135,45 L 180,135 L 225,60 L 265,180 L 270,210 L 330,210 L 340,165 L 375,60 L 435,120 L 480,38 L 540,98 L 600,45 L 600,0 Z" fill="url(#d-stalac)"/>
+
+        <!-- Main central stalactite (longer) -->
+        <path d="M 277,210 L 323,210 L 318,260 L 312,320 L 305,370 L 298,400 L 304,420 Z" fill="url(#d-stalac)"/>
+
+        <!-- Water drop forming -->
+        <ellipse cx="300" cy="425" rx="5" ry="7" fill="#D4A017" opacity="0.9"/>
+        <ellipse cx="300" cy="423" rx="2" ry="3" fill="#F4F0E8" opacity="0.6"/>
+
+        <!-- Pool -->
+        <ellipse cx="300" cy="640" rx="180" ry="22" fill="#0a1929" opacity="0.9"/>
+        <ellipse cx="300" cy="638" rx="180" ry="20" fill="#1F3A5F" opacity="0.4"/>
+
+        <!-- Ripples -->
+        <circle cx="300" cy="638" r="40" fill="none" stroke="#D4A017" stroke-width="1.2" opacity="0.5"/>
+        <circle cx="300" cy="638" r="65" fill="none" stroke="#D4A017" stroke-width="0.8" opacity="0.3"/>
+        <circle cx="300" cy="638" r="95" fill="none" stroke="#F4F0E8" stroke-width="0.5" opacity="0.2"/>
+
+        <!-- Side cave walls -->
+        <path d="M 0,300 L 0,750 L 90,750 L 75,690 L 45,600 L 65,510 L 30,420 L 0,300 Z" fill="#0a1929" opacity="0.9"/>
+        <path d="M 600,300 L 600,750 L 510,750 L 525,660 L 570,570 L 540,480 L 580,390 L 600,300 Z" fill="#0a1929" opacity="0.9"/>
+
+        <!-- Ground -->
+        <path d="M 0,650 Q 150,665 300,648 T 600,650 L 600,750 L 0,750 Z" fill="#0a1929"/>
+      </svg>
+
+      <div class="detail-hero-overlay">
+        <div class="detail-folio">FOLIO N°001</div>
+        <div class="detail-coord-pill">
+          22.347° N<br>
+          106.284° E<br>
+          —220 M (BENEATH SURFACE)
+        </div>
+      </div>
+
+      <div class="detail-hero-caption">
+        <strong style="color:#D4A017">PL. I</strong> — Acoustic chamber, Hang Sơn Đoòng cave system<br>
+        Photographed during the 47,000th millennium of continuous operation
+      </div>
+    </div>
+
+    <div class="detail-hero-text">
+      <div class="detail-eyebrow anim anim-1">— SUBJECT N°001 · VOLUME I</div>
+      <h1 class="detail-codename anim anim-2">DRIP.</h1>
+      <p class="detail-binomial anim anim-3">Subterranean Hydroacoustic Pulse</p>
+      <p class="detail-dek anim anim-4">
+        Forty-seven thousand years.<br>
+        One note. Every two-point-four seconds.<br>
+        Without intermission.
+      </p>
+    </div>
+  </section>
+
+  <!-- META BAR -->
+  <div class="meta-bar">
+    <div class="meta-cell">
+      <div class="label">— FREQUENCY</div>
+      <div class="value">880<span class="unit">Hz</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— INTERVAL</div>
+      <div class="value">2.4<span class="unit">SEC</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— DURATION</div>
+      <div class="value">47,000<span class="unit">YR</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— ROLE</div>
+      <div class="value">Tempo</div>
+    </div>
+  </div>
+
+  <!-- ARTICLE -->
+  <article class="detail-article">
+
+    <!-- ARTICLE GRID -->
+    <div class="article-grid">
+      <aside class="article-side">
+        <div class="side-label">— FIELD NOTE</div>
+        <div class="side-figure">「퐁.」</div>
+        <p class="side-caption">DRIP의 단일 발성. 한국어 의성어로 표기 시 단 한 음절. 이 소리는 동굴 잔향에 의해 약 6초간 지속된다.</p>
+      </aside>
+
+      <div class="article-main">
+        <h2>발견 — 단 하나의 음을 가진 존재.</h2>
+        <p>베트남 북동부, 손도옹(Sơn Đoòng) 동굴 시스템의 가장 깊은 챔버에서 발견되었다. 천장에서 솟아난 한 종유석 끝에 수억 년에 걸쳐 형성된 미세한 광물 표면이 있으며, 이 표면이 떨어지는 물방울에 의해 정확히 880Hz의 음을 발생시킨다.</p>
+
+        <p>중요한 것은 음정이 아니라 반복이다. DRIP은 정확히 2.4초마다 한 번씩 발성한다. 이 간격은 동굴 천장의 수분 응결률, 종유석 표면 장력, 그리고 챔버 내부 기온의 균형으로 결정된다. 인간이 측정한 가장 오래된 자연 메트로놈이다.</p>
+
+        <h3>— Editorial Commentary</h3>
+        <blockquote>
+          "DRIP은 음악가가 아니다. DRIP은 시간 그 자체의 발성기다. 우리는 그저 마이크를 가져다 댔을 뿐이다."
+        </blockquote>
+
+        <h3>— Acoustic Profile</h3>
+        <p>발성 주파수는 880Hz로, 인간 가청 주파수의 정중앙에 위치한다. 챔버 내부 잔향 시간(RT60)은 약 5.8초로 측정되었으며, 이는 유럽의 가장 큰 고딕 성당의 두 배에 해당한다. 따라서 한 번의 「퐁.」은 다음 발성이 시작되기 전에 거의 완전히 잦아든다 — 정확히 다음 음을 위한 자리를 남겨두고.</p>
+
+        <h3>— Role in Ensemble</h3>
+        <p>HARMONIC GEOGRAPHIC의 첫 번째 멤버이자, 앙상블 전체의 메트로놈이다. 다른 네 멤버(LEVIATHAN, CRICKET CHOIR, HOWL, RUPTURE)는 모두 DRIP의 2.4초 박자를 기준으로 배치된다. DRIP이 침묵하면, 앙상블 전체가 정지한다.</p>
+      </div>
+    </div>
+
+    <!-- WAVEFORM SECTION -->
+    <section class="data-section">
+      <h2>The Voice</h2>
+      <div class="sub">— ACOUSTIC SIGNATURE · SAMPLED 2026.04.18 · 04:17 LOCAL</div>
+
+      <svg class="waveform" viewBox="0 0 1200 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="wave-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#D4A017"/>
+            <stop offset="50%" stop-color="#F4F0E8"/>
+            <stop offset="100%" stop-color="#D4A017"/>
+          </linearGradient>
+        </defs>
+        <!-- baseline -->
+        <line x1="0" y1="50" x2="1200" y2="50" stroke="#F4F0E8" stroke-width="0.3" opacity="0.3"/>
+        <!-- waveform bars (DRIP pattern: silence, spike, decay, silence) -->
+        <g fill="url(#wave-grad)">
+          <!-- 3 cycles of: silence + spike + decay -->
+          <!-- Cycle 1 -->
+          <rect x="0" y="49" width="80" height="2"/>
+          <rect x="82" y="20" width="3" height="60"/>
+          <rect x="86" y="25" width="2" height="50"/>
+          <rect x="89" y="30" width="2" height="40"/>
+          <rect x="92" y="35" width="2" height="30"/>
+          <rect x="95" y="38" width="2" height="24"/>
+          <rect x="98" y="42" width="2" height="16"/>
+          <rect x="101" y="45" width="2" height="10"/>
+          <rect x="104" y="48" width="2" height="4"/>
+          <rect x="108" y="49" width="290" height="2"/>
+          <!-- Cycle 2 -->
+          <rect x="400" y="18" width="3" height="64"/>
+          <rect x="404" y="22" width="2" height="56"/>
+          <rect x="407" y="28" width="2" height="44"/>
+          <rect x="410" y="33" width="2" height="34"/>
+          <rect x="413" y="37" width="2" height="26"/>
+          <rect x="416" y="41" width="2" height="18"/>
+          <rect x="419" y="45" width="2" height="10"/>
+          <rect x="422" y="48" width="2" height="4"/>
+          <rect x="426" y="49" width="290" height="2"/>
+          <!-- Cycle 3 -->
+          <rect x="718" y="22" width="3" height="56"/>
+          <rect x="722" y="27" width="2" height="46"/>
+          <rect x="725" y="32" width="2" height="36"/>
+          <rect x="728" y="36" width="2" height="28"/>
+          <rect x="731" y="40" width="2" height="20"/>
+          <rect x="734" y="43" width="2" height="14"/>
+          <rect x="737" y="46" width="2" height="8"/>
+          <rect x="740" y="48" width="2" height="4"/>
+          <rect x="744" y="49" width="290" height="2"/>
+          <!-- Cycle 4 (truncated) -->
+          <rect x="1036" y="25" width="3" height="50"/>
+          <rect x="1040" y="30" width="2" height="40"/>
+          <rect x="1043" y="35" width="2" height="30"/>
+          <rect x="1046" y="40" width="2" height="20"/>
+          <rect x="1049" y="44" width="2" height="12"/>
+          <rect x="1052" y="48" width="148" height="4"/>
+        </g>
+      </svg>
+
+      <div class="waveform-meta">
+        <span>T = 0.0s</span>
+        <span>T = 2.4s</span>
+        <span>T = 4.8s</span>
+        <span>T = 7.2s</span>
+        <span>T = 9.6s</span>
+      </div>
+    </section>
+
+    <!-- MAP SECTION -->
+    <section class="map-section">
+      <div class="map-header">
+        <h2>Located.</h2>
+        <div class="meta">22.347°N · 106.284°E · ALT —220 M</div>
+      </div>
+
+      <!-- World map (REAL continent outlines, simplified) -->
+      <svg class="world-map" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+
+        <!-- Grid lines (latitude / longitude) - 먼저 깔아둠 -->
+        <g stroke="#1A1A1A" stroke-width="0.3" opacity="0.15">
+          <line x1="0" y1="125" x2="1000" y2="125"/>
+          <line x1="0" y1="250" x2="1000" y2="250"/>
+          <line x1="0" y1="375" x2="1000" y2="375"/>
+          <line x1="166" y1="0" x2="166" y2="500"/>
+          <line x1="333" y1="0" x2="333" y2="500"/>
+          <line x1="500" y1="0" x2="500" y2="500"/>
+          <line x1="666" y1="0" x2="666" y2="500"/>
+          <line x1="833" y1="0" x2="833" y2="500"/>
+        </g>
+
+        <!-- 단순화된 실제 세계지도 윤곽 -->
+        <g fill="#1A1A1A" opacity="0.88" stroke="#1A1A1A" stroke-width="0.4">
+          <!-- North America (Alaska 포함) -->
+          <path d="M 50,90 L 80,75 L 110,80 L 130,95 L 145,75 L 175,90 L 175,110 L 195,115 L 230,130 L 250,150 L 245,175 L 255,200 L 245,220 L 230,235 L 210,250 L 195,265 L 175,265 L 155,255 L 145,235 L 130,220 L 115,200 L 95,185 L 85,165 L 75,140 L 60,120 Z M 35,90 L 45,80 L 50,90 L 45,100 Z M 145,75 L 155,68 L 165,75 L 155,82 Z"/>
+
+          <!-- Greenland -->
+          <path d="M 295,55 L 320,50 L 340,60 L 345,85 L 335,110 L 315,115 L 295,105 L 290,80 Z"/>
+
+          <!-- South America -->
+          <path d="M 230,275 L 260,270 L 275,285 L 290,310 L 295,345 L 290,385 L 275,420 L 260,440 L 245,445 L 230,425 L 220,395 L 215,365 L 215,330 L 220,300 Z"/>
+
+          <!-- Europe -->
+          <path d="M 450,115 L 475,108 L 495,115 L 510,108 L 530,115 L 545,125 L 555,140 L 540,155 L 520,160 L 495,155 L 475,160 L 460,150 L 450,135 Z M 440,140 L 455,138 L 460,150 L 450,158 L 440,150 Z"/>
+
+          <!-- UK / Ireland -->
+          <path d="M 430,118 L 445,115 L 448,135 L 435,138 L 428,128 Z"/>
+
+          <!-- Scandinavia -->
+          <path d="M 510,75 L 530,80 L 535,105 L 525,118 L 510,115 L 505,95 Z"/>
+
+          <!-- Africa -->
+          <path d="M 460,180 L 490,178 L 520,182 L 545,195 L 555,215 L 565,245 L 570,280 L 565,310 L 555,335 L 545,355 L 525,370 L 505,378 L 490,370 L 475,355 L 465,330 L 460,300 L 458,270 L 460,240 L 462,210 Z M 555,215 L 570,212 L 575,225 L 565,232 Z"/>
+
+          <!-- Middle East / Arabia -->
+          <path d="M 560,195 L 585,193 L 600,205 L 610,225 L 600,250 L 580,255 L 565,245 L 558,225 Z"/>
+
+          <!-- Asia (main) -->
+          <path d="M 560,115 L 600,108 L 640,110 L 685,115 L 730,118 L 775,125 L 820,135 L 850,150 L 870,175 L 875,200 L 865,225 L 845,240 L 820,250 L 790,255 L 760,250 L 730,245 L 700,235 L 670,225 L 640,215 L 615,200 L 595,180 L 580,160 L 565,140 Z"/>
+
+          <!-- India -->
+          <path d="M 670,225 L 695,230 L 710,250 L 705,275 L 695,290 L 680,285 L 670,265 L 668,245 Z"/>
+
+          <!-- SE Asia / Indochina -->
+          <path d="M 745,240 L 765,245 L 775,265 L 770,285 L 755,290 L 745,275 L 740,255 Z"/>
+
+          <!-- Japan -->
+          <path d="M 870,170 L 885,165 L 895,180 L 890,200 L 875,205 L 868,190 Z"/>
+
+          <!-- Korean Peninsula -->
+          <path d="M 845,195 L 855,193 L 858,212 L 850,220 L 845,210 Z"/>
+
+          <!-- Philippines / Borneo / Sumatra -->
+          <path d="M 795,275 L 810,272 L 815,285 L 800,290 L 793,283 Z M 770,295 L 785,293 L 790,305 L 775,310 L 768,302 Z M 755,310 L 775,308 L 778,318 L 760,322 L 752,315 Z"/>
+
+          <!-- Australia -->
+          <path d="M 805,355 L 850,348 L 880,355 L 895,370 L 890,390 L 870,400 L 840,400 L 815,390 L 800,375 Z M 855,400 L 875,403 L 880,415 L 865,418 L 855,410 Z"/>
+
+          <!-- New Zealand -->
+          <path d="M 905,408 L 915,405 L 920,420 L 912,428 L 905,420 Z M 908,432 L 918,430 L 922,440 L 912,443 L 906,438 Z"/>
+
+          <!-- Madagascar -->
+          <path d="M 600,335 L 612,332 L 618,355 L 610,370 L 602,360 Z"/>
+
+          <!-- Iceland -->
+          <path d="M 425,85 L 442,82 L 445,95 L 432,98 L 422,92 Z"/>
+
+          <!-- Svalbard (for member 5) -->
+          <path d="M 510,50 L 522,48 L 525,58 L 515,62 L 508,55 Z"/>
+        </g>
+
+        <!-- Equator line emphasized -->
+        <line x1="0" y1="250" x2="1000" y2="250" stroke="#1A1A1A" stroke-width="0.5" opacity="0.25" stroke-dasharray="4,4"/>
+        <text x="6" y="247" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.5">— EQUATOR 0°</text>
+
+        <!-- Other member locations (dim) -->
+        <!-- LEVIATHAN: North Pacific (around 40°N, 160°W → x≈80, y≈140) -->
+        <circle cx="85" cy="145" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="93" y="138" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°002 LEVIATHAN</text>
+
+        <!-- CRICKET CHOIR: Costa Rica (10°N, 84°W → x≈260, y≈225) -->
+        <circle cx="210" cy="237" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="155" y="248" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°003 CRICKET CHOIR</text>
+
+        <!-- HOWL: Yukon, Canada (64°N, 135°W → x≈125, y≈75) -->
+        <circle cx="135" cy="100" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="143" y="93" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°004 HOWL</text>
+
+        <!-- RUPTURE: Svalbard (78°N, 16°E → x≈518, y≈55) -->
+        <circle cx="518" cy="55" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="526" y="48" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°005 RUPTURE</text>
+
+        <!-- DRIP location: Vietnam, Sơn Đoòng (17°N, 106°E → x≈795, y≈215) ACTIVE -->
+        <g>
+          <circle cx="775" cy="245" r="20" fill="#1F3A5F" opacity="0.15">
+            <animate attributeName="r" values="14;28;14" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.3;0.05;0.3" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="775" cy="245" r="7" fill="#1F3A5F"/>
+          <circle cx="775" cy="245" r="3" fill="#D4A017"/>
+          <text x="788" y="241" font-family="'Playfair Display'" font-style="italic" font-size="14" fill="#1F3A5F" font-weight="700">DRIP</text>
+          <text x="788" y="256" font-family="monospace" font-size="9" fill="#1A1A1A" opacity="0.75">N°001 · SƠN ĐOÒNG</text>
+        </g>
+
+        <!-- Coord crosshair on DRIP -->
+        <g stroke="#1F3A5F" stroke-width="0.5" opacity="0.4">
+          <line x1="775" y1="220" x2="775" y2="270"/>
+          <line x1="750" y1="245" x2="800" y2="245"/>
+        </g>
+
+        <!-- Coord labels -->
+        <text x="6" y="128" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.45">45°N</text>
+        <text x="6" y="378" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.45">45°S</text>
+      </svg>
+
+      <div class="map-legend">
+        <span><span class="dot active"></span> SUBJECT N°001 — DRIP (PRESENT FOLIO)</span>
+        <span><span class="dot"></span> OTHER VOLUME I MEMBERS</span>
+        <span>— DATA: HG-001 FIELD SURVEY · 2026.05</span>
+      </div>
+    </section>
+
+    <!-- SPECIMEN PANEL (잡지의 3단 박스) -->
+    <section class="specimen">
+      <div class="specimen-cell">
+        <div class="num">47,000</div>
+        <div class="label">— Years Active</div>
+        <div class="desc">DRIP는 인류가 동굴 벽에 처음 그림을 그리기 전부터 같은 박자를 유지해왔다.</div>
+      </div>
+      <div class="specimen-cell">
+        <div class="num">2.4″</div>
+        <div class="label">— Inter-Note Interval</div>
+        <div class="desc">물방울 응결률과 표면 장력으로 결정되는 자연 메트로놈. 오차 ±0.03초.</div>
+      </div>
+      <div class="specimen-cell">
+        <div class="num">5.8″</div>
+        <div class="label">— Reverb Tail (RT60)</div>
+        <div class="desc">고딕 성당 두 배에 해당하는 잔향. 한 번의 「퐁.」이 다음 발성까지 거의 완전히 소멸한다.</div>
+      </div>
+    </section>
+
+  </article>
+
+  <!-- DETAIL END -->
+  <footer class="detail-end">
+    <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 2px; opacity: 0.6;">
+      — END OF FOLIO N°001
+    </div>
+    <button class="next-link" onclick="goToMain()">
+      <span class="num">RETURN</span>
+      To the catalog →
+    </button>
+  </footer>
+
+</div>
+
+<!-- ============================================
+     PAGE — LEVIATHAN DETAIL
+     ============================================ -->
+<div class="page" id="page-leviathan">
+
+  <nav class="detail-nav">
+    <button class="back-btn" onclick="goToMain()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M5 12L12 19M5 12L12 5"/></svg>
+      RETURN TO COVER
+    </button>
+    <div class="detail-crumb">
+      <span>HARMONIC GEOGRAPHIC</span>
+      <span class="sep">/</span>
+      <span>VOL. I</span>
+      <span class="sep">/</span>
+      <span>FOLIO N°002</span>
+    </div>
+  </nav>
+
+  <section class="detail-hero">
+    <div class="detail-hero-visual">
+      <svg viewBox="0 0 600 750" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lev-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1F3A5F"/>
+      <stop offset="40%" stop-color="#0a1929"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </linearGradient>
+    <radialGradient id="lev-light" cx="50%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#D4A017" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#1F3A5F" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.9"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="750" fill="url(#lev-bg)"/>
+  <rect width="600" height="400" fill="url(#lev-light)"/>
+  <line x1="0" y1="90" x2="600" y2="90" stroke="#D4A017" stroke-width="0.5" opacity="0.3" stroke-dasharray="2,6"/>
+  <text x="20" y="80" font-family="monospace" font-size="9" fill="#D4A017" opacity="0.6" letter-spacing="2">— OCEAN SURFACE 0M</text>
+  <polygon points="200,90 400,90 500,200 100,200" fill="#D4A017" opacity="0.04"/>
+  <g opacity="0.5">
+    <circle cx="120" cy="280" r="2" fill="#F4F0E8" opacity="0.5"/>
+    <circle cx="150" cy="240" r="1.4" fill="#F4F0E8" opacity="0.4"/>
+    <circle cx="180" cy="210" r="1" fill="#F4F0E8" opacity="0.3"/>
+    <circle cx="470" cy="300" r="1.8" fill="#F4F0E8" opacity="0.5"/>
+    <circle cx="490" cy="260" r="1.2" fill="#F4F0E8" opacity="0.4"/>
+    <circle cx="520" cy="220" r="0.8" fill="#F4F0E8" opacity="0.3"/>
+  </g>
+  <g transform="translate(80, 380)">
+    <path d="M 0,80 Q 30,40 100,30 Q 180,20 280,30 Q 350,35 400,55 Q 420,65 425,80 Q 415,90 405,95 L 425,120 Q 410,128 380,125 Q 320,135 200,128 Q 100,120 50,105 Q 20,95 0,85 Z" fill="#0a1929" opacity="0.92"/>
+    <path d="M 425,80 L 450,50 L 462,72 L 470,55 L 475,85 L 470,98 L 460,105 L 445,115 L 425,120 Z" fill="#0a1929" opacity="0.92"/>
+    <circle cx="60" cy="68" r="2.5" fill="#D4A017" opacity="0.8"/>
+    <path d="M 50,95 Q 150,118 280,115 Q 350,113 400,105" stroke="#1F3A5F" stroke-width="0.5" fill="none" opacity="0.6"/>
+  </g>
+  <g stroke="#D4A017" stroke-width="0.8" fill="none" opacity="0.5">
+    <path d="M 80,460 Q 60,470 50,490 Q 65,510 80,520"/>
+    <path d="M 70,440 Q 40,460 30,490 Q 50,530 70,540"/>
+    <path d="M 60,420 Q 20,450 10,490 Q 30,540 60,560"/>
+  </g>
+  <g opacity="0.4">
+    <line x1="560" y1="250" x2="580" y2="250" stroke="#D4A017" stroke-width="0.5"/>
+    <text x="540" y="248" font-family="monospace" font-size="8" fill="#D4A017" text-anchor="end">— 200M</text>
+    <line x1="560" y1="450" x2="580" y2="450" stroke="#D4A017" stroke-width="0.5"/>
+    <text x="540" y="448" font-family="monospace" font-size="8" fill="#D4A017" text-anchor="end">— 400M</text>
+    <line x1="560" y1="650" x2="580" y2="650" stroke="#D4A017" stroke-width="0.5"/>
+    <text x="540" y="648" font-family="monospace" font-size="8" fill="#D4A017" text-anchor="end">— 600M</text>
+  </g>
+</svg>
+
+      <div class="detail-hero-overlay">
+        <div class="detail-folio">FOLIO N°002</div>
+        <div class="detail-coord-pill">
+          40.000° N<br>
+          ~160.000° W<br>
+          —400 M (PELAGIC ZONE)
+        </div>
+      </div>
+
+      <div class="detail-hero-caption">
+        <strong style="color:#D4A017">PL. II</strong> — Acoustic event, central North Pacific<br>First detected: SOSUS Array, 1989. Source unidentified to species.
+      </div>
+    </div>
+
+    <div class="detail-hero-text">
+      <div class="detail-eyebrow anim anim-1">— SUBJECT N°002 · VOLUME I</div>
+      <h1 class="detail-codename anim anim-2">LEVIATHAN.</h1>
+      <p class="detail-binomial anim anim-3">52 Hz Solitary Cetacean Call</p>
+      <p class="detail-dek anim anim-4">
+        The loneliest voice on Earth.<br>
+        Singing at a frequency no other whale answers.<br>
+        For at least thirty-eight years.
+      </p>
+    </div>
+  </section>
+
+  <div class="meta-bar">
+    <div class="meta-cell">
+      <div class="label">— FREQUENCY</div>
+      <div class="value">52<span class="unit">Hz</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— DEPTH</div>
+      <div class="value">~400<span class="unit">M</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— TRACKED SINCE</div>
+      <div class="value">1989<span class="unit">CE</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— ROLE</div>
+      <div class="value">Bass</div>
+    </div>
+  </div>
+
+  <article class="detail-article">
+    <div class="article-grid">
+      <aside class="article-side">
+        <div class="side-label">— FIELD NOTE</div>
+        <div class="side-figure">52Hz</div>
+        <p class="side-caption">대왕고래(10–39Hz)와 큰고래(20Hz)와는 다른, 단 하나의 개체가 사용하는 비표준 주파수. 어떤 종도 응답하지 않는 노래.</p>
+      </aside>
+
+      <div class="article-main">
+        <h2>발견 — 응답받지 못한 노래.</h2>
+        <p>1989년, 미 해군의 SOSUS 잠수함 감지 시스템이 북태평양 깊은 곳에서 정체불명의 음향을 포착했다. 분석 결과 52Hz — 그 어떤 알려진 고래 종의 발성 주파수와도 일치하지 않는 음이었다. 더 놀라운 것은 이 음이 단 하나의 개체로부터만, 그것도 단 하나의 응답도 받지 못한 채 매년 반복되고 있다는 사실이었다.</p>
+        <p>과학자들은 이 개체에게 "52-Hz Whale" 또는 "세상에서 가장 외로운 고래"라는 이름을 붙였다. 이종 교배에서 태어난 잡종일 수도, 청력 손상으로 자신만 들을 수 있는 음을 내는 것일 수도 있다. 정체는 여전히 미스터리다.</p>
+
+        <h3>— Editorial Commentary</h3>
+        <blockquote>
+          "LEVIATHAN은 가장 슬픈 멤버다. 그가 내는 모든 음은 응답을 기다리는 신호다 — 그러나 38년 동안, 어떤 응답도 돌아오지 않았다."
+        </blockquote>
+
+        <h3>— Acoustic Profile</h3>
+        <p>발성 주파수는 52Hz로, 대왕고래(15-25Hz)나 큰고래(20Hz)보다 현저히 높지만 여전히 인간의 저음 청각 영역과 겹친다. 음의 길이는 일반적으로 5-10초이며, 한 번의 발성 시퀀스에서 4-8회 반복된다. 1992년부터 2004년까지 추적된 데이터에 따르면 매년 8-11월 사이 가장 활발하다.</p>
+
+        <h3>— Role in Ensemble</h3>
+        <p>HARMONIC GEOGRAPHIC의 베이스 라인. DRIP의 880Hz와 정확히 4 옥타브 아래에 위치하며, 두 음이 동시에 울릴 때 자연스러운 옥타브 화성을 형성한다. LEVIATHAN의 5–10초 발성이 DRIP의 두세 박자에 걸쳐 지속되며, 앙상블의 시간적 깊이를 확장한다.</p>
+      </div>
+    </div>
+
+    <section class="data-section">
+      <h2>The Voice</h2>
+      <div class="sub">— ACOUSTIC SIGNATURE · SAMPLED 2024.10.03 · 38°N 152°W</div>
+
+      <svg class="waveform" viewBox="0 0 1200 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <defs>
+  <linearGradient id="wave-grad-lev" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#D4A017"/>
+    <stop offset="50%" stop-color="#F4F0E8"/>
+    <stop offset="100%" stop-color="#D4A017"/>
+  </linearGradient>
+</defs>
+<line x1="0" y1="50" x2="1200" y2="50" stroke="#F4F0E8" stroke-width="0.3" opacity="0.3"/>
+<g fill="url(#wave-grad-lev)">
+  <rect x="0" y="48" width="60" height="4"/>
+  <rect x="60" y="42" width="3" height="16"/><rect x="64" y="35" width="3" height="30"/><rect x="68" y="28" width="3" height="44"/><rect x="72" y="22" width="3" height="56"/><rect x="76" y="18" width="3" height="64"/><rect x="80" y="15" width="3" height="70"/><rect x="84" y="13" width="3" height="74"/><rect x="88" y="12" width="3" height="76"/><rect x="92" y="11" width="3" height="78"/><rect x="96" y="11" width="3" height="78"/><rect x="100" y="11" width="3" height="78"/><rect x="104" y="12" width="3" height="76"/><rect x="108" y="13" width="3" height="74"/><rect x="112" y="14" width="3" height="72"/><rect x="116" y="15" width="3" height="70"/><rect x="120" y="16" width="3" height="68"/><rect x="124" y="17" width="3" height="66"/><rect x="128" y="18" width="3" height="64"/><rect x="132" y="19" width="3" height="62"/><rect x="136" y="20" width="3" height="60"/><rect x="140" y="22" width="3" height="56"/><rect x="144" y="24" width="3" height="52"/><rect x="148" y="27" width="3" height="46"/><rect x="152" y="30" width="3" height="40"/><rect x="156" y="34" width="3" height="32"/><rect x="160" y="38" width="3" height="24"/><rect x="164" y="42" width="3" height="16"/><rect x="168" y="46" width="3" height="8"/>
+  <rect x="172" y="48" width="180" height="4"/>
+  <rect x="352" y="42" width="3" height="16"/><rect x="356" y="36" width="3" height="28"/><rect x="360" y="29" width="3" height="42"/><rect x="364" y="23" width="3" height="54"/><rect x="368" y="18" width="3" height="64"/><rect x="372" y="14" width="3" height="72"/><rect x="376" y="12" width="3" height="76"/><rect x="380" y="11" width="3" height="78"/><rect x="384" y="11" width="3" height="78"/><rect x="388" y="12" width="3" height="76"/><rect x="392" y="13" width="3" height="74"/><rect x="396" y="15" width="3" height="70"/><rect x="400" y="17" width="3" height="66"/><rect x="404" y="20" width="3" height="60"/><rect x="408" y="23" width="3" height="54"/><rect x="412" y="27" width="3" height="46"/><rect x="416" y="32" width="3" height="36"/><rect x="420" y="37" width="3" height="26"/><rect x="424" y="42" width="3" height="16"/><rect x="428" y="46" width="3" height="8"/>
+  <rect x="432" y="48" width="220" height="4"/>
+  <rect x="652" y="42" width="3" height="16"/><rect x="656" y="34" width="3" height="32"/><rect x="660" y="26" width="3" height="48"/><rect x="664" y="19" width="3" height="62"/><rect x="668" y="14" width="3" height="72"/><rect x="672" y="11" width="3" height="78"/><rect x="676" y="10" width="3" height="80"/><rect x="680" y="10" width="3" height="80"/><rect x="684" y="11" width="3" height="78"/><rect x="688" y="13" width="3" height="74"/><rect x="692" y="15" width="3" height="70"/><rect x="696" y="18" width="3" height="64"/><rect x="700" y="22" width="3" height="56"/><rect x="704" y="27" width="3" height="46"/><rect x="708" y="33" width="3" height="34"/><rect x="712" y="39" width="3" height="22"/><rect x="716" y="44" width="3" height="12"/><rect x="720" y="47" width="3" height="6"/>
+  <rect x="724" y="48" width="476" height="4"/>
+</g>
+      </svg>
+
+      <div class="waveform-meta">
+        <span>T = 0s</span>
+        <span>T = 8s</span>
+        <span>T = 16s</span>
+        <span>T = 24s</span>
+        <span>T = 30s</span>
+      </div>
+    </section>
+
+    <section class="map-section">
+      <div class="map-header">
+        <h2>Located.</h2>
+        <div class="meta">~40°N · ~160°W · NORTH PACIFIC</div>
+      </div>
+      
+      <svg class="world-map" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <g stroke="#1A1A1A" stroke-width="0.3" opacity="0.15">
+          <line x1="0" y1="125" x2="1000" y2="125"/>
+          <line x1="0" y1="250" x2="1000" y2="250"/>
+          <line x1="0" y1="375" x2="1000" y2="375"/>
+          <line x1="166" y1="0" x2="166" y2="500"/>
+          <line x1="333" y1="0" x2="333" y2="500"/>
+          <line x1="500" y1="0" x2="500" y2="500"/>
+          <line x1="666" y1="0" x2="666" y2="500"/>
+          <line x1="833" y1="0" x2="833" y2="500"/>
+        </g>
+        <g fill="#1A1A1A" opacity="0.88" stroke="#1A1A1A" stroke-width="0.4">
+<path d="M 50,90 L 80,75 L 110,80 L 130,95 L 145,75 L 175,90 L 175,110 L 195,115 L 230,130 L 250,150 L 245,175 L 255,200 L 245,220 L 230,235 L 210,250 L 195,265 L 175,265 L 155,255 L 145,235 L 130,220 L 115,200 L 95,185 L 85,165 L 75,140 L 60,120 Z"/>
+<path d="M 295,55 L 320,50 L 340,60 L 345,85 L 335,110 L 315,115 L 295,105 L 290,80 Z"/>
+<path d="M 230,275 L 260,270 L 275,285 L 290,310 L 295,345 L 290,385 L 275,420 L 260,440 L 245,445 L 230,425 L 220,395 L 215,365 L 215,330 L 220,300 Z"/>
+<path d="M 450,115 L 475,108 L 495,115 L 510,108 L 530,115 L 545,125 L 555,140 L 540,155 L 520,160 L 495,155 L 475,160 L 460,150 L 450,135 Z"/>
+<path d="M 510,75 L 530,80 L 535,105 L 525,118 L 510,115 L 505,95 Z"/>
+<path d="M 460,180 L 490,178 L 520,182 L 545,195 L 555,215 L 565,245 L 570,280 L 565,310 L 555,335 L 545,355 L 525,370 L 505,378 L 490,370 L 475,355 L 465,330 L 460,300 L 458,270 L 460,240 L 462,210 Z"/>
+<path d="M 560,115 L 600,108 L 640,110 L 685,115 L 730,118 L 775,125 L 820,135 L 850,150 L 870,175 L 875,200 L 865,225 L 845,240 L 820,250 L 790,255 L 760,250 L 730,245 L 700,235 L 670,225 L 640,215 L 615,200 L 595,180 L 580,160 L 565,140 Z"/>
+<path d="M 670,225 L 695,230 L 710,250 L 705,275 L 695,290 L 680,285 L 670,265 L 668,245 Z"/>
+<path d="M 870,170 L 885,165 L 895,180 L 890,200 L 875,205 L 868,190 Z"/>
+<path d="M 805,355 L 850,348 L 880,355 L 895,370 L 890,390 L 870,400 L 840,400 L 815,390 L 800,375 Z"/>
+        </g>
+        <line x1="0" y1="250" x2="1000" y2="250" stroke="#1A1A1A" stroke-width="0.5" opacity="0.25" stroke-dasharray="4,4"/>
+        <text x="6" y="247" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.5">— EQUATOR 0°</text>
+
+        <circle cx="775" cy="245" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="783" y="241" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°001 DRIP</text>
+
+        <circle cx="210" cy="237" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="155" y="248" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°003 CRICKET</text>
+
+        <circle cx="135" cy="100" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="143" y="96" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°004 HOWL</text>
+
+        <circle cx="518" cy="55" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="526" y="51" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°005 RUPTURE</text>
+        <g>
+          <circle cx="85" cy="145" r="20" fill="#1F3A5F" opacity="0.15">
+            <animate attributeName="r" values="14;28;14" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.3;0.05;0.3" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="85" cy="145" r="7" fill="#1F3A5F"/>
+          <circle cx="85" cy="145" r="3" fill="#D4A017"/>
+          <text x="98" y="141" font-family="'Playfair Display'" font-style="italic" font-size="14" fill="#1F3A5F" font-weight="700">LEVIATHAN</text>
+          <text x="98" y="156" font-family="monospace" font-size="9" fill="#1A1A1A" opacity="0.75">N°002 · N. PACIFIC</text>
+        </g>
+        <g stroke="#1F3A5F" stroke-width="0.5" opacity="0.4">
+          <line x1="85" y1="120" x2="85" y2="170"/>
+          <line x1="60" y1="145" x2="110" y2="145"/>
+        </g>
+        <text x="6" y="128" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.45">45°N</text>
+        <text x="6" y="378" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.45">45°S</text>
+      </svg>
+
+      <div class="map-legend">
+        <span><span class="dot active"></span> SUBJECT N°002 — LEVIATHAN (PRESENT FOLIO)</span>
+        <span><span class="dot"></span> OTHER VOLUME I MEMBERS</span>
+        <span>— DATA: SOSUS ARRAY · 1989–2024</span>
+      </div>
+    </section>
+
+    <section class="specimen">
+      <div class="specimen-cell">
+        <div class="num">38</div>
+        <div class="label">— Years Tracked</div>
+        <div class="desc">1989년 최초 감지 이후 매년 같은 주파수로 동일한 패턴의 노래가 기록되어 왔다.</div>
+      </div>
+      <div class="specimen-cell">
+        <div class="num">0</div>
+        <div class="label">— Replies Received</div>
+        <div class="desc">38년간 어떤 고래도, 어떤 종도, 어떤 개체도 52Hz에 응답하지 않았다.</div>
+      </div>
+      <div class="specimen-cell">
+        <div class="num">1</div>
+        <div class="label">— Individual</div>
+        <div class="desc">전 세계에서 이 주파수로 노래하는 개체는 단 하나로 추정된다. 종은 미상.</div>
+      </div>
+    </section>
+  </article>
+
+  <footer class="detail-end">
+    <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 2px; opacity: 0.6;">— END OF FOLIO N°002</div>
+    <button class="next-link" onclick="goToMain()">
+      <span class="num">RETURN</span>
+      To the catalog →
+    </button>
+  </footer>
+</div>
+
+
+<!-- ============================================
+     PAGE — CRICKET DETAIL
+     ============================================ -->
+<div class="page" id="page-cricket">
+
+  <nav class="detail-nav">
+    <button class="back-btn" onclick="goToMain()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M5 12L12 19M5 12L12 5"/></svg>
+      RETURN TO COVER
+    </button>
+    <div class="detail-crumb">
+      <span>HARMONIC GEOGRAPHIC</span>
+      <span class="sep">/</span>
+      <span>VOL. I</span>
+      <span class="sep">/</span>
+      <span>FOLIO N°003</span>
+    </div>
+  </nav>
+
+  <section class="detail-hero">
+    <div class="detail-hero-visual">
+      <svg viewBox="0 0 600 750" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cri-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a2010"/>
+      <stop offset="50%" stop-color="#1a3a25"/>
+      <stop offset="100%" stop-color="#0a1808"/>
+    </linearGradient>
+    <radialGradient id="cri-glow" cx="50%" cy="40%" r="40%">
+      <stop offset="0%" stop-color="#D4A017" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#0a2010" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="750" fill="url(#cri-bg)"/>
+  <rect width="600" height="750" fill="url(#cri-glow)"/>
+  <g fill="#0a1808" opacity="0.85">
+    <path d="M 0,0 Q 80,40 60,120 Q 100,80 140,140 Q 170,100 200,160 Q 240,120 270,180 Q 310,140 340,200 Q 380,160 420,210 Q 460,170 500,220 Q 540,180 580,230 L 600,200 L 600,0 Z"/>
+    <ellipse cx="80" cy="100" rx="25" ry="50" transform="rotate(15 80 100)"/>
+    <ellipse cx="250" cy="120" rx="20" ry="45" transform="rotate(-10 250 120)"/>
+    <ellipse cx="420" cy="130" rx="22" ry="48" transform="rotate(20 420 130)"/>
+  </g>
+  <g opacity="0.9">
+    <circle cx="120" cy="320" r="4" fill="#D4A017"/>
+    <circle cx="120" cy="320" r="10" fill="#D4A017" opacity="0.25"/>
+    <circle cx="200" cy="290" r="3.5" fill="#D4A017"/>
+    <circle cx="200" cy="290" r="9" fill="#D4A017" opacity="0.25"/>
+    <circle cx="290" cy="340" r="4" fill="#D4A017"/>
+    <circle cx="290" cy="340" r="10" fill="#D4A017" opacity="0.25"/>
+    <circle cx="380" cy="300" r="3.5" fill="#D4A017"/>
+    <circle cx="380" cy="300" r="9" fill="#D4A017" opacity="0.25"/>
+    <circle cx="460" cy="335" r="4" fill="#D4A017"/>
+    <circle cx="460" cy="335" r="10" fill="#D4A017" opacity="0.25"/>
+    <circle cx="160" cy="400" r="3" fill="#D4A017"/>
+    <circle cx="160" cy="400" r="8" fill="#D4A017" opacity="0.25"/>
+    <circle cx="250" cy="430" r="3.5" fill="#D4A017"/>
+    <circle cx="250" cy="430" r="9" fill="#D4A017" opacity="0.25"/>
+    <circle cx="340" cy="410" r="3" fill="#D4A017"/>
+    <circle cx="340" cy="410" r="8" fill="#D4A017" opacity="0.25"/>
+    <circle cx="420" cy="445" r="3.5" fill="#D4A017"/>
+    <circle cx="420" cy="445" r="9" fill="#D4A017" opacity="0.25"/>
+    <circle cx="180" cy="500" r="3" fill="#D4A017"/>
+    <circle cx="180" cy="500" r="8" fill="#D4A017" opacity="0.25"/>
+    <circle cx="310" cy="520" r="3.5" fill="#D4A017"/>
+    <circle cx="310" cy="520" r="9" fill="#D4A017" opacity="0.25"/>
+    <circle cx="440" cy="510" r="3" fill="#D4A017"/>
+    <circle cx="440" cy="510" r="8" fill="#D4A017" opacity="0.25"/>
+  </g>
+  <g stroke="#D4A017" stroke-width="0.4" fill="none" opacity="0.3">
+    <line x1="120" y1="320" x2="200" y2="290"/>
+    <line x1="200" y1="290" x2="290" y2="340"/>
+    <line x1="290" y1="340" x2="380" y2="300"/>
+    <line x1="380" y1="300" x2="460" y2="335"/>
+    <line x1="120" y1="320" x2="160" y2="400"/>
+    <line x1="290" y1="340" x2="340" y2="410"/>
+    <line x1="160" y1="400" x2="250" y2="430"/>
+    <line x1="250" y1="430" x2="340" y2="410"/>
+    <line x1="340" y1="410" x2="420" y2="445"/>
+    <line x1="180" y1="500" x2="310" y2="520"/>
+    <line x1="310" y1="520" x2="440" y2="510"/>
+  </g>
+  <path d="M 0,650 Q 100,620 200,640 Q 300,610 400,635 Q 500,615 600,640 L 600,750 L 0,750 Z" fill="#050a04"/>
+  <g fill="#0a1808" opacity="0.7">
+    <path d="M 50,640 L 60,610 L 55,640 Z"/>
+    <path d="M 80,645 L 95,605 L 90,645 Z"/>
+    <path d="M 150,635 L 165,600 L 160,635 Z"/>
+    <path d="M 240,640 L 255,605 L 250,640 Z"/>
+    <path d="M 400,635 L 415,600 L 410,635 Z"/>
+    <path d="M 530,640 L 545,605 L 540,640 Z"/>
+  </g>
+</svg>
+
+      <div class="detail-hero-overlay">
+        <div class="detail-folio">FOLIO N°003</div>
+        <div class="detail-coord-pill">
+          10.300° N<br>
+          84.797° W<br>
+          +1,440 M (CLOUD FOREST)
+        </div>
+      </div>
+
+      <div class="detail-hero-caption">
+        <strong style="color:#D4A017">PL. III</strong> — Synchronous stridulation event, Monteverde Reserve<br>Recorded: dusk, ~23,000 individual stridulators
+      </div>
+    </div>
+
+    <div class="detail-hero-text">
+      <div class="detail-eyebrow anim anim-1">— SUBJECT N°003 · VOLUME I</div>
+      <h1 class="detail-codename anim anim-2">CRICKET<br>CHOIR.</h1>
+      <p class="detail-binomial anim anim-3">Orthopteran Stridulation Cluster</p>
+      <p class="detail-dek anim anim-4">
+        Twenty-three thousand voices,<br>
+        each one a single wing-strike,<br>
+        synchronized to the nearest millisecond.
+      </p>
+    </div>
+  </section>
+
+  <div class="meta-bar">
+    <div class="meta-cell">
+      <div class="label">— FREQUENCY</div>
+      <div class="value">4.5<span class="unit">kHz</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— INDIVIDUALS</div>
+      <div class="value">~23,000<span class="unit">EA</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— SYNC ERROR</div>
+      <div class="value">±0.8<span class="unit">MS</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— ROLE</div>
+      <div class="value">Texture</div>
+    </div>
+  </div>
+
+  <article class="detail-article">
+    <div class="article-grid">
+      <aside class="article-side">
+        <div class="side-label">— FIELD NOTE</div>
+        <div class="side-figure">×23,000</div>
+        <p class="side-caption">CRICKET CHOIR는 단일 개체가 아닌 군집이다. 약 23,000마리의 귀뚜라미가 동일한 4.5kHz 음역대에서 거의 완벽하게 동기화된 발성을 한다.</p>
+      </aside>
+
+      <div class="article-main">
+        <h2>발견 — 동시성의 기적.</h2>
+        <p>코스타리카 몬테베르데 운무림(Cloud Forest)의 해질녘. 일출과 일몰의 짧은 박명 시간 동안, 숲 전체에서 일제히 같은 4.5kHz 음이 시작된다. 처음에는 산발적이지만, 약 90초 이내에 모든 개체가 같은 박자에 동조한다.</p>
+        <p>이 현상은 "결합 오실레이터(coupled oscillator)" 동기화로 설명된다. 각 귀뚜라미는 옆 개체의 발성을 듣고 자신의 박자를 미세 조정하며, 그 결과 23,000마리가 ±0.8밀리초의 오차 안에서 완벽한 합창을 만든다. 인간 합창단으로 재현 불가능한 정확도다.</p>
+
+        <h3>— Editorial Commentary</h3>
+        <blockquote>
+          "CRICKET CHOIR는 하나의 멤버이지만, 동시에 23,000개의 멤버다. 그들은 지휘자 없이 지휘된다."
+        </blockquote>
+
+        <h3>— Acoustic Profile</h3>
+        <p>발성 주파수 4.5kHz는 인간 가청 영역의 중상위에 위치하며, 새의 지저귐과 유사한 영역이다. 하지만 군집 동기화 발성은 단일 톤이 아닌 "리듬 그 자체"로 들리며, 박자 간격은 약 0.4초(150 BPM)다. 운무림의 안개가 자연 리버브 역할을 해 소리가 입체적으로 확산된다.</p>
+
+        <h3>— Role in Ensemble</h3>
+        <p>HARMONIC GEOGRAPHIC의 텍스처 레이어. DRIP의 880Hz와 약 2 옥타브 위에 위치하며, 단일 음이 아닌 "리듬 카펫"으로 앙상블의 배경을 채운다. 23,000개의 점이 만드는 미시적 리듬은 인간이 의도적으로 작곡할 수 없는 자연 발생적 폴리리듬이다.</p>
+      </div>
+    </div>
+
+    <section class="data-section">
+      <h2>The Voice</h2>
+      <div class="sub">— ACOUSTIC SIGNATURE · SAMPLED 2025.08.14 · 18:42 LOCAL</div>
+
+      <svg class="waveform" viewBox="0 0 1200 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <defs>
+  <linearGradient id="wave-grad-cri" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#D4A017"/>
+    <stop offset="50%" stop-color="#F4F0E8"/>
+    <stop offset="100%" stop-color="#D4A017"/>
+  </linearGradient>
+</defs>
+<line x1="0" y1="50" x2="1200" y2="50" stroke="#F4F0E8" stroke-width="0.3" opacity="0.3"/>
+<g fill="url(#wave-grad-cri)" opacity="0.4">
+  <rect x="0" y="48" width="450" height="4"/>
+  <rect x="450" y="46" width="200" height="8"/>
+  <rect x="650" y="44" width="200" height="12"/>
+  <rect x="850" y="46" width="350" height="8"/>
+</g>
+<g fill="url(#wave-grad-cri)" opacity="0.9">
+  <rect x="20" y="30" width="2" height="40"/><rect x="24" y="34" width="2" height="32"/><rect x="28" y="32" width="2" height="36"/><rect x="32" y="38" width="2" height="24"/><rect x="36" y="35" width="2" height="30"/><rect x="40" y="33" width="2" height="34"/><rect x="44" y="36" width="2" height="28"/><rect x="48" y="34" width="2" height="32"/><rect x="52" y="40" width="2" height="20"/><rect x="56" y="37" width="2" height="26"/><rect x="62" y="32" width="2" height="36"/><rect x="66" y="35" width="2" height="30"/><rect x="70" y="33" width="2" height="34"/><rect x="74" y="38" width="2" height="24"/><rect x="80" y="34" width="2" height="32"/><rect x="84" y="36" width="2" height="28"/><rect x="90" y="32" width="2" height="36"/><rect x="94" y="35" width="2" height="30"/><rect x="100" y="33" width="2" height="34"/><rect x="106" y="37" width="2" height="26"/><rect x="112" y="34" width="2" height="32"/><rect x="118" y="36" width="2" height="28"/><rect x="124" y="32" width="2" height="36"/><rect x="130" y="35" width="2" height="30"/><rect x="136" y="33" width="2" height="34"/><rect x="142" y="37" width="2" height="26"/><rect x="148" y="34" width="2" height="32"/><rect x="154" y="36" width="2" height="28"/><rect x="160" y="32" width="2" height="36"/><rect x="166" y="35" width="2" height="30"/><rect x="172" y="33" width="2" height="34"/><rect x="180" y="37" width="2" height="26"/><rect x="188" y="34" width="2" height="32"/><rect x="196" y="36" width="2" height="28"/><rect x="204" y="32" width="2" height="36"/><rect x="212" y="35" width="2" height="30"/><rect x="220" y="33" width="2" height="34"/><rect x="228" y="37" width="2" height="26"/><rect x="236" y="34" width="2" height="32"/><rect x="244" y="36" width="2" height="28"/><rect x="252" y="32" width="2" height="36"/><rect x="260" y="35" width="2" height="30"/><rect x="270" y="33" width="2" height="34"/><rect x="280" y="37" width="2" height="26"/><rect x="290" y="34" width="2" height="32"/><rect x="300" y="36" width="2" height="28"/><rect x="310" y="32" width="2" height="36"/><rect x="320" y="35" width="2" height="30"/><rect x="330" y="33" width="2" height="34"/><rect x="345" y="37" width="2" height="26"/><rect x="360" y="34" width="2" height="32"/><rect x="375" y="36" width="2" height="28"/><rect x="395" y="32" width="2" height="36"/><rect x="415" y="35" width="2" height="30"/>
+</g>
+<g fill="url(#wave-grad-cri)" opacity="0.7">
+  <rect x="460" y="32" width="2" height="36"/><rect x="470" y="35" width="2" height="30"/><rect x="480" y="33" width="2" height="34"/><rect x="490" y="37" width="2" height="26"/><rect x="500" y="34" width="2" height="32"/><rect x="512" y="36" width="2" height="28"/><rect x="525" y="32" width="2" height="36"/><rect x="540" y="35" width="2" height="30"/><rect x="555" y="33" width="2" height="34"/><rect x="570" y="37" width="2" height="26"/><rect x="585" y="34" width="2" height="32"/><rect x="600" y="36" width="2" height="28"/><rect x="615" y="32" width="2" height="36"/><rect x="630" y="35" width="2" height="30"/>
+  <rect x="650" y="20" width="2" height="60"/><rect x="665" y="22" width="2" height="56"/><rect x="680" y="18" width="2" height="64"/><rect x="695" y="24" width="2" height="52"/><rect x="710" y="20" width="2" height="60"/><rect x="725" y="22" width="2" height="56"/><rect x="740" y="18" width="2" height="64"/><rect x="755" y="24" width="2" height="52"/><rect x="770" y="20" width="2" height="60"/><rect x="785" y="22" width="2" height="56"/><rect x="800" y="18" width="2" height="64"/><rect x="815" y="24" width="2" height="52"/><rect x="830" y="22" width="2" height="56"/>
+  <rect x="850" y="30" width="2" height="40"/><rect x="870" y="32" width="2" height="36"/><rect x="890" y="34" width="2" height="32"/><rect x="910" y="32" width="2" height="36"/><rect x="930" y="35" width="2" height="30"/><rect x="950" y="33" width="2" height="34"/><rect x="970" y="37" width="2" height="26"/><rect x="990" y="34" width="2" height="32"/><rect x="1010" y="36" width="2" height="28"/><rect x="1030" y="32" width="2" height="36"/><rect x="1050" y="35" width="2" height="30"/><rect x="1075" y="33" width="2" height="34"/><rect x="1100" y="37" width="2" height="26"/><rect x="1130" y="40" width="2" height="20"/><rect x="1160" y="42" width="2" height="16"/>
+</g>
+      </svg>
+
+      <div class="waveform-meta">
+        <span>T = 0s</span>
+        <span>T = 2s</span>
+        <span>T = 4s — SYNC PEAK</span>
+        <span>T = 6s</span>
+        <span>T = 8s</span>
+      </div>
+    </section>
+
+    <section class="map-section">
+      <div class="map-header">
+        <h2>Located.</h2>
+        <div class="meta">10.300°N · 84.797°W · MONTEVERDE, CR</div>
+      </div>
+      
+      <svg class="world-map" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <g stroke="#1A1A1A" stroke-width="0.3" opacity="0.15">
+          <line x1="0" y1="125" x2="1000" y2="125"/>
+          <line x1="0" y1="250" x2="1000" y2="250"/>
+          <line x1="0" y1="375" x2="1000" y2="375"/>
+          <line x1="166" y1="0" x2="166" y2="500"/>
+          <line x1="333" y1="0" x2="333" y2="500"/>
+          <line x1="500" y1="0" x2="500" y2="500"/>
+          <line x1="666" y1="0" x2="666" y2="500"/>
+          <line x1="833" y1="0" x2="833" y2="500"/>
+        </g>
+        <g fill="#1A1A1A" opacity="0.88" stroke="#1A1A1A" stroke-width="0.4">
+<path d="M 50,90 L 80,75 L 110,80 L 130,95 L 145,75 L 175,90 L 175,110 L 195,115 L 230,130 L 250,150 L 245,175 L 255,200 L 245,220 L 230,235 L 210,250 L 195,265 L 175,265 L 155,255 L 145,235 L 130,220 L 115,200 L 95,185 L 85,165 L 75,140 L 60,120 Z"/>
+<path d="M 295,55 L 320,50 L 340,60 L 345,85 L 335,110 L 315,115 L 295,105 L 290,80 Z"/>
+<path d="M 230,275 L 260,270 L 275,285 L 290,310 L 295,345 L 290,385 L 275,420 L 260,440 L 245,445 L 230,425 L 220,395 L 215,365 L 215,330 L 220,300 Z"/>
+<path d="M 450,115 L 475,108 L 495,115 L 510,108 L 530,115 L 545,125 L 555,140 L 540,155 L 520,160 L 495,155 L 475,160 L 460,150 L 450,135 Z"/>
+<path d="M 510,75 L 530,80 L 535,105 L 525,118 L 510,115 L 505,95 Z"/>
+<path d="M 460,180 L 490,178 L 520,182 L 545,195 L 555,215 L 565,245 L 570,280 L 565,310 L 555,335 L 545,355 L 525,370 L 505,378 L 490,370 L 475,355 L 465,330 L 460,300 L 458,270 L 460,240 L 462,210 Z"/>
+<path d="M 560,115 L 600,108 L 640,110 L 685,115 L 730,118 L 775,125 L 820,135 L 850,150 L 870,175 L 875,200 L 865,225 L 845,240 L 820,250 L 790,255 L 760,250 L 730,245 L 700,235 L 670,225 L 640,215 L 615,200 L 595,180 L 580,160 L 565,140 Z"/>
+<path d="M 670,225 L 695,230 L 710,250 L 705,275 L 695,290 L 680,285 L 670,265 L 668,245 Z"/>
+<path d="M 870,170 L 885,165 L 895,180 L 890,200 L 875,205 L 868,190 Z"/>
+<path d="M 805,355 L 850,348 L 880,355 L 895,370 L 890,390 L 870,400 L 840,400 L 815,390 L 800,375 Z"/>
+        </g>
+        <line x1="0" y1="250" x2="1000" y2="250" stroke="#1A1A1A" stroke-width="0.5" opacity="0.25" stroke-dasharray="4,4"/>
+        <text x="6" y="247" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.5">— EQUATOR 0°</text>
+
+        <circle cx="775" cy="245" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="783" y="241" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°001 DRIP</text>
+
+        <circle cx="85" cy="145" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="93" y="141" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°002 LEVIATHAN</text>
+
+        <circle cx="135" cy="100" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="143" y="96" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°004 HOWL</text>
+
+        <circle cx="518" cy="55" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="526" y="51" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°005 RUPTURE</text>
+        <g>
+          <circle cx="210" cy="237" r="20" fill="#1F3A5F" opacity="0.15">
+            <animate attributeName="r" values="14;28;14" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.3;0.05;0.3" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="210" cy="237" r="7" fill="#1F3A5F"/>
+          <circle cx="210" cy="237" r="3" fill="#D4A017"/>
+          <text x="223" y="233" font-family="'Playfair Display'" font-style="italic" font-size="14" fill="#1F3A5F" font-weight="700">CRICKET CHOIR</text>
+          <text x="223" y="248" font-family="monospace" font-size="9" fill="#1A1A1A" opacity="0.75">N°003 · MONTEVERDE</text>
+        </g>
+        <g stroke="#1F3A5F" stroke-width="0.5" opacity="0.4">
+          <line x1="210" y1="212" x2="210" y2="262"/>
+          <line x1="185" y1="237" x2="235" y2="237"/>
+        </g>
+        <text x="6" y="128" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.45">45°N</text>
+        <text x="6" y="378" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.45">45°S</text>
+      </svg>
+
+      <div class="map-legend">
+        <span><span class="dot active"></span> SUBJECT N°003 — CRICKET CHOIR (PRESENT FOLIO)</span>
+        <span><span class="dot"></span> OTHER VOLUME I MEMBERS</span>
+        <span>— DATA: HG-001 FIELD RECORDING · 2025.08</span>
+      </div>
+    </section>
+
+    <section class="specimen">
+      <div class="specimen-cell">
+        <div class="num">23,000</div>
+        <div class="label">— Individuals</div>
+        <div class="desc">단일 합창에 참여하는 추정 개체 수. 멸종 위기종 포함, 약 7개 다른 종으로 구성.</div>
+      </div>
+      <div class="specimen-cell">
+        <div class="num">±0.8″</div>
+        <div class="label">— Sync Error (ms)</div>
+        <div class="desc">밀리초 단위 동기화 오차. 인간 합창단으로 재현 불가능한 정밀도.</div>
+      </div>
+      <div class="specimen-cell">
+        <div class="num">90″</div>
+        <div class="label">— Convergence Time</div>
+        <div class="desc">산발적 발성이 완전한 동기화에 도달하기까지 걸리는 평균 시간.</div>
+      </div>
+    </section>
+  </article>
+
+  <footer class="detail-end">
+    <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 2px; opacity: 0.6;">— END OF FOLIO N°003</div>
+    <button class="next-link" onclick="goToMain()">
+      <span class="num">RETURN</span>
+      To the catalog →
+    </button>
+  </footer>
+</div>
+
+
+<!-- ============================================
+     PAGE — HOWL DETAIL
+     ============================================ -->
+<div class="page" id="page-howl">
+
+  <nav class="detail-nav">
+    <button class="back-btn" onclick="goToMain()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M5 12L12 19M5 12L12 5"/></svg>
+      RETURN TO COVER
+    </button>
+    <div class="detail-crumb">
+      <span>HARMONIC GEOGRAPHIC</span>
+      <span class="sep">/</span>
+      <span>VOL. I</span>
+      <span class="sep">/</span>
+      <span>FOLIO N°004</span>
+    </div>
+  </nav>
+
+  <section class="detail-hero">
+    <div class="detail-hero-visual">
+      <svg viewBox="0 0 600 750" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="howl-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a1f28"/>
+      <stop offset="40%" stop-color="#2a3540"/>
+      <stop offset="100%" stop-color="#0a0e12"/>
+    </linearGradient>
+    <radialGradient id="howl-moon" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#F4F0E8"/>
+      <stop offset="80%" stop-color="#F4F0E8"/>
+      <stop offset="100%" stop-color="#F4F0E8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="750" fill="url(#howl-bg)"/>
+  <g fill="#F4F0E8" opacity="0.5">
+    <circle cx="80" cy="80" r="0.8"/>
+    <circle cx="150" cy="60" r="1"/>
+    <circle cx="220" cy="100" r="0.6"/>
+    <circle cx="500" cy="50" r="0.9"/>
+    <circle cx="540" cy="120" r="0.7"/>
+    <circle cx="350" cy="40" r="0.5"/>
+    <circle cx="80" cy="200" r="0.6"/>
+    <circle cx="280" cy="180" r="0.8"/>
+  </g>
+  <circle cx="420" cy="180" r="80" fill="url(#howl-moon)" opacity="0.9"/>
+  <circle cx="420" cy="180" r="80" fill="#F4F0E8" opacity="0.85"/>
+  <circle cx="400" cy="165" r="6" fill="#1F3A5F" opacity="0.15"/>
+  <circle cx="430" cy="195" r="4" fill="#1F3A5F" opacity="0.12"/>
+  <circle cx="445" cy="170" r="5" fill="#1F3A5F" opacity="0.18"/>
+  <circle cx="395" cy="195" r="3" fill="#1F3A5F" opacity="0.15"/>
+  <circle cx="415" cy="155" r="3" fill="#1F3A5F" opacity="0.12"/>
+  <path d="M 0,420 L 80,380 L 130,400 L 200,370 L 270,395 L 330,375 L 400,400 L 470,375 L 540,395 L 600,385 L 600,440 L 0,440 Z" fill="#1a1f28" opacity="0.7"/>
+  <path d="M 0,470 L 100,400 L 180,440 L 260,395 L 340,440 L 420,400 L 500,440 L 600,420 L 600,500 L 0,500 Z" fill="#0a1015" opacity="0.85"/>
+  <g transform="translate(180, 450)">
+    <path d="M 0,140 L 5,80 L 20,40 L 35,20 L 50,15 L 60,10 L 70,12 L 75,20 L 78,28 L 85,30 L 90,35 L 95,42 L 100,50 L 105,60 L 108,75 L 110,95 L 108,115 L 105,135 L 102,150 L 95,160 L 75,155 L 60,160 L 45,158 L 30,155 L 15,150 L 5,145 Z" fill="#0a0a0c"/>
+    <path d="M 70,12 L 78,8 L 85,5 L 92,8 L 88,15 L 80,18 L 75,20 Z" fill="#0a0a0c"/>
+    <path d="M 40,15 L 45,5 L 55,12 Z" fill="#0a0a0c"/>
+    <path d="M 95,140 L 115,135 L 125,145 L 120,160 L 105,155 Z" fill="#0a0a0c"/>
+    <path d="M 25,155 L 28,180 L 35,200 L 30,205 L 22,200 L 20,180 Z" fill="#0a0a0c"/>
+    <path d="M 70,155 L 73,182 L 78,200 L 73,205 L 68,200 L 65,180 Z" fill="#0a0a0c"/>
+    <path d="M 95,150 L 100,175 L 105,195 L 100,200 L 95,195 L 92,175 Z" fill="#0a0a0c"/>
+  </g>
+  <g stroke="#D4A017" stroke-width="0.7" fill="none" opacity="0.4">
+    <path d="M 270,440 Q 280,400 320,360"/>
+    <path d="M 260,425 Q 290,380 340,330"/>
+    <path d="M 255,415 Q 300,360 360,300"/>
+  </g>
+  <path d="M 0,540 Q 100,560 200,545 Q 300,565 400,550 Q 500,560 600,548 L 600,750 L 0,750 Z" fill="#1a1f28" opacity="0.95"/>
+  <path d="M 0,580 Q 100,600 200,585 Q 300,605 400,590 Q 500,600 600,588 L 600,750 L 0,750 Z" fill="#0a0e12"/>
+  <g fill="#F4F0E8" opacity="0.5">
+    <circle cx="50" cy="600" r="1"/>
+    <circle cx="120" cy="650" r="1.2"/>
+    <circle cx="280" cy="630" r="0.8"/>
+    <circle cx="380" cy="660" r="1"/>
+    <circle cx="470" cy="640" r="0.9"/>
+    <circle cx="540" cy="670" r="1.1"/>
+  </g>
+</svg>
+
+      <div class="detail-hero-overlay">
+        <div class="detail-folio">FOLIO N°004</div>
+        <div class="detail-coord-pill">
+          64.282° N<br>
+          135.106° W<br>
+          +880 M (BOREAL FOREST)
+        </div>
+      </div>
+
+      <div class="detail-hero-caption">
+        <strong style="color:#D4A017">PL. IV</strong> — Lone vocalist, Yukon Territory<br>Pack identification: NWT-Δ7. Tracked since: 2019
+      </div>
+    </div>
+
+    <div class="detail-hero-text">
+      <div class="detail-eyebrow anim anim-1">— SUBJECT N°004 · VOLUME I</div>
+      <h1 class="detail-codename anim anim-2">HOWL.</h1>
+      <p class="detail-binomial anim anim-3">Lupine Vocal, Boreal Forest</p>
+      <p class="detail-dek anim anim-4">
+        A 12-second call, repeated three times.<br>
+        Heard from 16 kilometers away.<br>
+        Answered only by the silence of the snow.
+      </p>
+    </div>
+  </section>
+
+  <div class="meta-bar">
+    <div class="meta-cell">
+      <div class="label">— FREQUENCY</div>
+      <div class="value">380<span class="unit">Hz</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— CALL LENGTH</div>
+      <div class="value">11.8<span class="unit">SEC</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— TRAVEL DIST.</div>
+      <div class="value">16<span class="unit">KM</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— ROLE</div>
+      <div class="value">Vocal</div>
+    </div>
+  </div>
+
+  <article class="detail-article">
+    <div class="article-grid">
+      <aside class="article-side">
+        <div class="side-label">— FIELD NOTE</div>
+        <div class="side-figure">×3</div>
+        <p class="side-caption">HOWL의 표준 시퀀스. 11.8초의 단일 콜이 평균 24초 간격으로 정확히 세 번 반복된다. 응답을 위한 의식적 침묵.</p>
+      </aside>
+
+      <div class="article-main">
+        <h2>발견 — 부르고, 듣고, 다시 부른다.</h2>
+        <p>유콘 준주의 보레알 숲. 영하 30도의 겨울밤, 한 마리의 늑대가 절벽 위에서 노래한다. 그의 콜은 정확한 구조를 따른다 — 11.8초 길이의 단일 콜, 24초의 침묵, 다시 11.8초의 콜, 또 24초의 침묵, 마지막 11.8초의 콜. 그러고 나면 그는 침묵한다.</p>
+        <p>이 패턴은 무리의 위치를 확인하는 신호이자, 영토 선언이자, 종(種) 내 식별 코드다. 380Hz의 기본 주파수에서 시작해 점진적으로 하행하는 글리산도는 인간 청취자가 멀리서도 식별할 수 있을 만큼 독특하다. 늑대 한 마리의 콜이 평탄한 설원 위에서 약 16km까지 전달된다.</p>
+
+        <h3>— Editorial Commentary</h3>
+        <blockquote>
+          "HOWL은 응답을 듣기 위해 노래한다. 그가 침묵하는 24초의 간격이, 그가 노래하는 시간만큼 중요하다."
+        </blockquote>
+
+        <h3>— Acoustic Profile</h3>
+        <p>발성 시작 시 380Hz에서 약 8초간 유지된 뒤, 마지막 4초에 걸쳐 약 220Hz까지 하행한다. 이 글리산도는 늑대 개체마다 고유한 "지문"을 형성하며, 같은 무리의 늑대들은 거의 동일한 콜 곡선을 공유한다. NWT-Δ7 개체는 2019년 이후 모든 콜에서 ±2Hz 오차 안의 일관성을 보였다.</p>
+
+        <h3>— Role in Ensemble</h3>
+        <p>HARMONIC GEOGRAPHIC의 보컬 라인. DRIP의 880Hz와 정확히 1 옥타브 아래(440Hz 부근에서 시작)에 위치하며, 앙상블에서 유일한 멜로딕 곡선을 담당한다. 다른 멤버들이 일정한 톤이나 리듬을 유지하는 동안, HOWL만이 음정의 상승과 하강을 만들어낸다.</p>
+      </div>
+    </div>
+
+    <section class="data-section">
+      <h2>The Voice</h2>
+      <div class="sub">— ACOUSTIC SIGNATURE · SAMPLED 2026.02.11 · 02:33 LOCAL · —31°C</div>
+
+      <svg class="waveform" viewBox="0 0 1200 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <defs>
+  <linearGradient id="wave-grad-howl" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#D4A017"/>
+    <stop offset="50%" stop-color="#F4F0E8"/>
+    <stop offset="100%" stop-color="#D4A017"/>
+  </linearGradient>
+</defs>
+<line x1="0" y1="50" x2="1200" y2="50" stroke="#F4F0E8" stroke-width="0.3" opacity="0.3"/>
+<g fill="url(#wave-grad-howl)">
+  <rect x="0" y="48" width="20" height="4"/>
+  <rect x="20" y="42" width="3" height="16"/><rect x="25" y="35" width="3" height="30"/><rect x="30" y="28" width="3" height="44"/><rect x="35" y="22" width="3" height="56"/><rect x="40" y="18" width="3" height="64"/><rect x="45" y="15" width="3" height="70"/><rect x="50" y="14" width="3" height="72"/><rect x="55" y="13" width="3" height="74"/><rect x="60" y="13" width="3" height="74"/><rect x="65" y="13" width="3" height="74"/><rect x="70" y="13" width="3" height="74"/><rect x="75" y="13" width="3" height="74"/><rect x="80" y="14" width="3" height="72"/><rect x="85" y="14" width="3" height="72"/><rect x="90" y="15" width="3" height="70"/><rect x="95" y="15" width="3" height="70"/><rect x="100" y="16" width="3" height="68"/><rect x="105" y="16" width="3" height="68"/><rect x="110" y="17" width="3" height="66"/>
+  <rect x="115" y="19" width="3" height="62"/><rect x="120" y="21" width="3" height="58"/><rect x="125" y="24" width="3" height="52"/><rect x="130" y="27" width="3" height="46"/><rect x="135" y="31" width="3" height="38"/><rect x="140" y="35" width="3" height="30"/><rect x="145" y="40" width="3" height="20"/><rect x="150" y="45" width="3" height="10"/>
+  <rect x="155" y="48" width="135" height="4"/>
+  <rect x="290" y="42" width="3" height="16"/><rect x="295" y="34" width="3" height="32"/><rect x="300" y="26" width="3" height="48"/><rect x="305" y="20" width="3" height="60"/><rect x="310" y="16" width="3" height="68"/><rect x="315" y="14" width="3" height="72"/><rect x="320" y="13" width="3" height="74"/><rect x="325" y="13" width="3" height="74"/><rect x="330" y="13" width="3" height="74"/><rect x="335" y="13" width="3" height="74"/><rect x="340" y="13" width="3" height="74"/><rect x="345" y="13" width="3" height="74"/><rect x="350" y="14" width="3" height="72"/><rect x="355" y="14" width="3" height="72"/><rect x="360" y="15" width="3" height="70"/><rect x="365" y="15" width="3" height="70"/><rect x="370" y="16" width="3" height="68"/><rect x="375" y="17" width="3" height="66"/><rect x="380" y="18" width="3" height="64"/><rect x="385" y="20" width="3" height="60"/><rect x="390" y="22" width="3" height="56"/><rect x="395" y="25" width="3" height="50"/><rect x="400" y="28" width="3" height="44"/><rect x="405" y="32" width="3" height="36"/><rect x="410" y="36" width="3" height="28"/><rect x="415" y="41" width="3" height="18"/><rect x="420" y="46" width="3" height="8"/>
+  <rect x="425" y="48" width="135" height="4"/>
+  <rect x="560" y="42" width="3" height="16"/><rect x="565" y="34" width="3" height="32"/><rect x="570" y="26" width="3" height="48"/><rect x="575" y="20" width="3" height="60"/><rect x="580" y="16" width="3" height="68"/><rect x="585" y="14" width="3" height="72"/><rect x="590" y="13" width="3" height="74"/><rect x="595" y="12" width="3" height="76"/><rect x="600" y="12" width="3" height="76"/><rect x="605" y="12" width="3" height="76"/><rect x="610" y="13" width="3" height="74"/><rect x="615" y="13" width="3" height="74"/><rect x="620" y="14" width="3" height="72"/><rect x="625" y="14" width="3" height="72"/><rect x="630" y="15" width="3" height="70"/><rect x="635" y="16" width="3" height="68"/><rect x="640" y="17" width="3" height="66"/><rect x="645" y="18" width="3" height="64"/><rect x="650" y="20" width="3" height="60"/><rect x="655" y="22" width="3" height="56"/><rect x="660" y="25" width="3" height="50"/><rect x="665" y="28" width="3" height="44"/><rect x="670" y="32" width="3" height="36"/><rect x="675" y="36" width="3" height="28"/><rect x="680" y="41" width="3" height="18"/><rect x="685" y="46" width="3" height="8"/>
+  <rect x="690" y="48" width="510" height="4"/>
+</g>
+      </svg>
+
+      <div class="waveform-meta">
+        <span>T = 0s — CALL 1</span>
+        <span>T = 24s — CALL 2</span>
+        <span>T = 48s — CALL 3</span>
+        <span>T = 60s — END</span>
+        <span>T = 72s</span>
+      </div>
+    </section>
+
+    <section class="map-section">
+      <div class="map-header">
+        <h2>Located.</h2>
+        <div class="meta">64.282°N · 135.106°W · YUKON, CA</div>
+      </div>
+      
+      <svg class="world-map" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <g stroke="#1A1A1A" stroke-width="0.3" opacity="0.15">
+          <line x1="0" y1="125" x2="1000" y2="125"/>
+          <line x1="0" y1="250" x2="1000" y2="250"/>
+          <line x1="0" y1="375" x2="1000" y2="375"/>
+          <line x1="166" y1="0" x2="166" y2="500"/>
+          <line x1="333" y1="0" x2="333" y2="500"/>
+          <line x1="500" y1="0" x2="500" y2="500"/>
+          <line x1="666" y1="0" x2="666" y2="500"/>
+          <line x1="833" y1="0" x2="833" y2="500"/>
+        </g>
+        <g fill="#1A1A1A" opacity="0.88" stroke="#1A1A1A" stroke-width="0.4">
+<path d="M 50,90 L 80,75 L 110,80 L 130,95 L 145,75 L 175,90 L 175,110 L 195,115 L 230,130 L 250,150 L 245,175 L 255,200 L 245,220 L 230,235 L 210,250 L 195,265 L 175,265 L 155,255 L 145,235 L 130,220 L 115,200 L 95,185 L 85,165 L 75,140 L 60,120 Z"/>
+<path d="M 295,55 L 320,50 L 340,60 L 345,85 L 335,110 L 315,115 L 295,105 L 290,80 Z"/>
+<path d="M 230,275 L 260,270 L 275,285 L 290,310 L 295,345 L 290,385 L 275,420 L 260,440 L 245,445 L 230,425 L 220,395 L 215,365 L 215,330 L 220,300 Z"/>
+<path d="M 450,115 L 475,108 L 495,115 L 510,108 L 530,115 L 545,125 L 555,140 L 540,155 L 520,160 L 495,155 L 475,160 L 460,150 L 450,135 Z"/>
+<path d="M 510,75 L 530,80 L 535,105 L 525,118 L 510,115 L 505,95 Z"/>
+<path d="M 460,180 L 490,178 L 520,182 L 545,195 L 555,215 L 565,245 L 570,280 L 565,310 L 555,335 L 545,355 L 525,370 L 505,378 L 490,370 L 475,355 L 465,330 L 460,300 L 458,270 L 460,240 L 462,210 Z"/>
+<path d="M 560,115 L 600,108 L 640,110 L 685,115 L 730,118 L 775,125 L 820,135 L 850,150 L 870,175 L 875,200 L 865,225 L 845,240 L 820,250 L 790,255 L 760,250 L 730,245 L 700,235 L 670,225 L 640,215 L 615,200 L 595,180 L 580,160 L 565,140 Z"/>
+<path d="M 670,225 L 695,230 L 710,250 L 705,275 L 695,290 L 680,285 L 670,265 L 668,245 Z"/>
+<path d="M 870,170 L 885,165 L 895,180 L 890,200 L 875,205 L 868,190 Z"/>
+<path d="M 805,355 L 850,348 L 880,355 L 895,370 L 890,390 L 870,400 L 840,400 L 815,390 L 800,375 Z"/>
+        </g>
+        <line x1="0" y1="250" x2="1000" y2="250" stroke="#1A1A1A" stroke-width="0.5" opacity="0.25" stroke-dasharray="4,4"/>
+        <text x="6" y="247" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.5">— EQUATOR 0°</text>
+
+        <circle cx="775" cy="245" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="783" y="241" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°001 DRIP</text>
+
+        <circle cx="85" cy="145" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="93" y="141" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°002 LEVIATHAN</text>
+
+        <circle cx="210" cy="237" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="155" y="248" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°003 CRICKET</text>
+
+        <circle cx="518" cy="55" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="526" y="51" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°005 RUPTURE</text>
+        <g>
+          <circle cx="135" cy="100" r="20" fill="#1F3A5F" opacity="0.15">
+            <animate attributeName="r" values="14;28;14" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.3;0.05;0.3" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="135" cy="100" r="7" fill="#1F3A5F"/>
+          <circle cx="135" cy="100" r="3" fill="#D4A017"/>
+          <text x="148" y="96" font-family="'Playfair Display'" font-style="italic" font-size="14" fill="#1F3A5F" font-weight="700">HOWL</text>
+          <text x="148" y="111" font-family="monospace" font-size="9" fill="#1A1A1A" opacity="0.75">N°004 · YUKON</text>
+        </g>
+        <g stroke="#1F3A5F" stroke-width="0.5" opacity="0.4">
+          <line x1="135" y1="75" x2="135" y2="125"/>
+          <line x1="110" y1="100" x2="160" y2="100"/>
+        </g>
+        <text x="6" y="128" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.45">45°N</text>
+        <text x="6" y="378" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.45">45°S</text>
+      </svg>
+
+      <div class="map-legend">
+        <span><span class="dot active"></span> SUBJECT N°004 — HOWL (PRESENT FOLIO)</span>
+        <span><span class="dot"></span> OTHER VOLUME I MEMBERS</span>
+        <span>— DATA: NWT-Δ7 PACK TRACKING · 2019–2026</span>
+      </div>
+    </section>
+
+    <section class="specimen">
+      <div class="specimen-cell">
+        <div class="num">11.8″</div>
+        <div class="label">— Single Call Length</div>
+        <div class="desc">단일 콜의 표준 길이. 8초 유지 + 4초 글리산도. ±0.4초 오차.</div>
+      </div>
+      <div class="specimen-cell">
+        <div class="num">16km</div>
+        <div class="label">— Audible Radius</div>
+        <div class="desc">평탄한 설원 위에서 콜이 가청 가능한 최대 거리. 영하 30°C 조건 기준.</div>
+      </div>
+      <div class="specimen-cell">
+        <div class="num">−160Hz</div>
+        <div class="label">— Glissando Range</div>
+        <div class="desc">콜 마지막 4초 동안 주파수 하행 폭. 380Hz → 220Hz.</div>
+      </div>
+    </section>
+  </article>
+
+  <footer class="detail-end">
+    <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 2px; opacity: 0.6;">— END OF FOLIO N°004</div>
+    <button class="next-link" onclick="goToMain()">
+      <span class="num">RETURN</span>
+      To the catalog →
+    </button>
+  </footer>
+</div>
+
+
+<!-- ============================================
+     PAGE — RUPTURE DETAIL
+     ============================================ -->
+<div class="page" id="page-rupture">
+
+  <nav class="detail-nav">
+    <button class="back-btn" onclick="goToMain()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M5 12L12 19M5 12L12 5"/></svg>
+      RETURN TO COVER
+    </button>
+    <div class="detail-crumb">
+      <span>HARMONIC GEOGRAPHIC</span>
+      <span class="sep">/</span>
+      <span>VOL. I</span>
+      <span class="sep">/</span>
+      <span>FOLIO N°005</span>
+    </div>
+  </nav>
+
+  <section class="detail-hero">
+    <div class="detail-hero-visual">
+      <svg viewBox="0 0 600 750" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="rup-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#A8C8D8"/>
+      <stop offset="40%" stop-color="#5a7a90"/>
+      <stop offset="100%" stop-color="#1a3045"/>
+    </linearGradient>
+    <linearGradient id="rup-ice" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F4F0E8"/>
+      <stop offset="40%" stop-color="#D8E8F0"/>
+      <stop offset="100%" stop-color="#A8C8D8"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="750" fill="url(#rup-bg)"/>
+  <g fill="#F4F0E8" opacity="0.3">
+    <ellipse cx="120" cy="100" rx="80" ry="15"/>
+    <ellipse cx="350" cy="60" rx="100" ry="12"/>
+    <ellipse cx="500" cy="120" rx="70" ry="18"/>
+  </g>
+  <path d="M 0,280 L 80,200 L 140,260 L 220,180 L 300,250 L 380,170 L 460,230 L 540,190 L 600,220 L 600,310 L 0,310 Z" fill="#A8C8D8" opacity="0.6"/>
+  <path d="M 0,320 L 40,290 L 100,310 L 160,280 L 230,310 L 290,275 L 360,310 L 430,285 L 510,310 L 580,290 L 600,300 L 600,580 L 0,580 Z" fill="url(#rup-ice)"/>
+  <g stroke="#1F3A5F" stroke-width="1.2" fill="none" opacity="0.5">
+    <path d="M 80,320 L 90,400 L 75,470 L 85,540"/>
+    <path d="M 180,310 L 200,380 L 185,460 L 210,520"/>
+    <path d="M 320,320 L 300,400 L 320,470 L 305,540"/>
+    <path d="M 470,310 L 480,390 L 460,470 L 485,545"/>
+  </g>
+  <path d="M 280,310 L 295,360 L 270,420 L 290,470 L 265,530 L 285,580" stroke="#1F3A5F" stroke-width="3" fill="none"/>
+  <path d="M 280,310 L 295,360 L 270,420 L 290,470 L 265,530 L 285,580" stroke="#0a1929" stroke-width="1.5" fill="none" opacity="0.8"/>
+  <path d="M 295,360 L 320,375 L 340,365" stroke="#1F3A5F" stroke-width="1.2" fill="none" opacity="0.7"/>
+  <path d="M 270,420 L 245,430 L 230,415" stroke="#1F3A5F" stroke-width="1.2" fill="none" opacity="0.7"/>
+  <path d="M 290,470 L 315,485 L 335,480" stroke="#1F3A5F" stroke-width="1.2" fill="none" opacity="0.7"/>
+  <g stroke="#A8C8D8" stroke-width="0.5" fill="none" opacity="0.4">
+    <line x1="30" y1="380" x2="80" y2="382"/>
+    <line x1="120" y1="420" x2="170" y2="418"/>
+    <line x1="380" y1="400" x2="440" y2="405"/>
+    <line x1="490" y1="430" x2="550" y2="428"/>
+  </g>
+  <g transform="translate(250, 590)">
+    <polygon points="0,0 30,-10 50,20 35,40 5,30" fill="url(#rup-ice)" opacity="0.85"/>
+    <polygon points="0,0 30,-10 50,20 35,40 5,30" stroke="#1F3A5F" stroke-width="0.5" fill="none"/>
+  </g>
+  <path d="M 0,640 Q 100,635 200,642 Q 300,635 400,642 Q 500,635 600,642 L 600,750 L 0,750 Z" fill="#1a3045"/>
+  <path d="M 0,650 Q 100,645 200,652 Q 300,645 400,652 Q 500,645 600,652" stroke="#5a7a90" stroke-width="0.6" fill="none" opacity="0.5"/>
+  <g stroke="#D4A017" stroke-width="0.7" fill="none" opacity="0.5">
+    <ellipse cx="270" cy="650" rx="40" ry="3"/>
+    <ellipse cx="270" cy="650" rx="70" ry="5" opacity="0.7"/>
+    <ellipse cx="270" cy="650" rx="100" ry="7" opacity="0.5"/>
+  </g>
+  <g fill="#F4F0E8" opacity="0.6">
+    <circle cx="260" cy="635" r="1.2"/>
+    <circle cx="280" cy="638" r="1"/>
+    <circle cx="275" cy="630" r="0.8"/>
+    <circle cx="290" cy="640" r="1.4"/>
+    <circle cx="255" cy="640" r="1"/>
+  </g>
+</svg>
+
+      <div class="detail-hero-overlay">
+        <div class="detail-folio">FOLIO N°005</div>
+        <div class="detail-coord-pill">
+          78.225° N<br>
+          15.633° E<br>
+          ±0 M (TIDEWATER GLACIER)
+        </div>
+      </div>
+
+      <div class="detail-hero-caption">
+        <strong style="color:#D4A017">PL. V</strong> — Calving event, Kongsbreen Glacier, Svalbard<br>Recorded mass: 240,000 tonnes. Duration: 3.2 seconds.
+      </div>
+    </div>
+
+    <div class="detail-hero-text">
+      <div class="detail-eyebrow anim anim-1">— SUBJECT N°005 · VOLUME I</div>
+      <h1 class="detail-codename anim anim-2">RUPTURE.</h1>
+      <p class="detail-binomial anim anim-3">Glacial Calving Impact</p>
+      <p class="detail-dek anim anim-4">
+        Three-point-two seconds.<br>
+        Two hundred forty thousand tonnes of ice.<br>
+        A 40-hertz note the ocean answers.
+      </p>
+    </div>
+  </section>
+
+  <div class="meta-bar">
+    <div class="meta-cell">
+      <div class="label">— FREQUENCY</div>
+      <div class="value">40<span class="unit">Hz</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— EVENT MASS</div>
+      <div class="value">240k<span class="unit">TONNES</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— EVENT DUR.</div>
+      <div class="value">3.2<span class="unit">SEC</span></div>
+    </div>
+    <div class="meta-cell">
+      <div class="label">— ROLE</div>
+      <div class="value">Impact</div>
+    </div>
+  </div>
+
+  <article class="detail-article">
+    <div class="article-grid">
+      <aside class="article-side">
+        <div class="side-label">— FIELD NOTE</div>
+        <div class="side-figure">240<span style="font-size:48px">kt</span></div>
+        <p class="side-caption">단일 캘빙(빙하 붕락) 이벤트의 평균 질량. 약 1,200그루 분량의 침엽수림 무게에 해당한다.</p>
+      </aside>
+
+      <div class="article-main">
+        <h2>발견 — 지구가 부서지는 소리.</h2>
+        <p>스발바르 제도 콩스브린(Kongsbreen) 빙하의 가장자리. 매년 봄, 약 240,000톤 규모의 빙하 덩어리가 한 번에 분리되어 바다로 떨어진다. 이 과정은 정확히 3.2초가 걸리며, 그 순간 40Hz의 저주파 충격음이 해수와 대기 양쪽으로 방출된다.</p>
+        <p>40Hz는 인간 청각의 거의 하한선이지만, 가슴으로 느낄 수 있는 진동에 해당한다. 음파는 해수에서 시속 5,400km로 전파되어 수백 km 떨어진 다른 해양 생물들에게 도달한다. 일부 연구는 대왕고래가 캘빙 이벤트를 일종의 "지구의 박자"로 인지한다고 시사한다.</p>
+
+        <h3>— Editorial Commentary</h3>
+        <blockquote>
+          "RUPTURE은 멤버 중 가장 짧게 연주한다. 단 3.2초. 그러나 그 한 번의 음이 47,000년의 침묵을 깨운다."
+        </blockquote>
+
+        <h3>— Acoustic Profile</h3>
+        <p>이벤트는 세 단계로 구성된다. (1) 균열 단계: 0–0.4초, 고주파(약 200Hz) 크래킹 사운드. (2) 분리 단계: 0.4–2.6초, 중주파(약 80Hz) 마찰 및 활강음. (3) 충돌 단계: 2.6–3.2초, 40Hz 임팩트와 5,400m³의 물기둥 분출. 잔향은 빙하 만(灣)의 형태에 따라 10–40초 지속된다.</p>
+
+        <h3>— Role in Ensemble</h3>
+        <p>HARMONIC GEOGRAPHIC의 임팩트. 다른 멤버들이 지속적으로 연주하는 동안 RUPTURE만이 침묵하다가, 특정 순간에 단 한 번 모든 다른 음을 압도하는 발성을 한다. 앙상블에서의 클라이맥스이자, "퐁."이 47,000년에 걸쳐 만든 메트로놈에 단 한 번의 절정을 더하는 마침표.</p>
+      </div>
+    </div>
+
+    <section class="data-section">
+      <h2>The Voice</h2>
+      <div class="sub">— ACOUSTIC SIGNATURE · SAMPLED 2025.06.27 · 04:12 LOCAL · KONGSBREEN</div>
+
+      <svg class="waveform" viewBox="0 0 1200 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <defs>
+  <linearGradient id="wave-grad-rup" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#D4A017"/>
+    <stop offset="50%" stop-color="#F4F0E8"/>
+    <stop offset="100%" stop-color="#D4A017"/>
+  </linearGradient>
+</defs>
+<line x1="0" y1="50" x2="1200" y2="50" stroke="#F4F0E8" stroke-width="0.3" opacity="0.3"/>
+<g fill="url(#wave-grad-rup)">
+  <rect x="0" y="48" width="200" height="4"/>
+  <rect x="200" y="40" width="2" height="20"/><rect x="205" y="38" width="2" height="24"/><rect x="208" y="42" width="2" height="16"/><rect x="212" y="36" width="2" height="28"/><rect x="215" y="40" width="2" height="20"/><rect x="219" y="38" width="2" height="24"/><rect x="223" y="42" width="2" height="16"/><rect x="227" y="36" width="2" height="28"/><rect x="232" y="34" width="2" height="32"/><rect x="236" y="38" width="2" height="24"/>
+  <rect x="240" y="32" width="3" height="36"/><rect x="248" y="28" width="3" height="44"/><rect x="256" y="25" width="3" height="50"/><rect x="264" y="22" width="3" height="56"/><rect x="272" y="20" width="3" height="60"/><rect x="280" y="18" width="3" height="64"/><rect x="288" y="16" width="3" height="68"/><rect x="296" y="15" width="3" height="70"/><rect x="304" y="13" width="3" height="74"/><rect x="312" y="11" width="3" height="78"/><rect x="320" y="10" width="3" height="80"/><rect x="328" y="9" width="3" height="82"/><rect x="336" y="8" width="3" height="84"/><rect x="344" y="7" width="3" height="86"/><rect x="352" y="6" width="3" height="88"/><rect x="360" y="5" width="3" height="90"/><rect x="368" y="4" width="3" height="92"/><rect x="376" y="3" width="3" height="94"/>
+  <rect x="384" y="0" width="4" height="100"/><rect x="390" y="0" width="4" height="100"/><rect x="396" y="0" width="4" height="100"/><rect x="402" y="0" width="4" height="100"/><rect x="408" y="0" width="4" height="100"/><rect x="414" y="0" width="4" height="100"/><rect x="420" y="1" width="4" height="98"/><rect x="426" y="2" width="4" height="96"/>
+  <rect x="434" y="5" width="3" height="90"/><rect x="441" y="8" width="3" height="84"/><rect x="448" y="12" width="3" height="76"/><rect x="455" y="16" width="3" height="68"/><rect x="462" y="20" width="3" height="60"/><rect x="469" y="24" width="3" height="52"/><rect x="476" y="28" width="3" height="44"/><rect x="483" y="32" width="3" height="36"/><rect x="490" y="35" width="3" height="30"/><rect x="497" y="38" width="3" height="24"/><rect x="504" y="40" width="3" height="20"/><rect x="512" y="42" width="3" height="16"/><rect x="520" y="44" width="3" height="12"/><rect x="528" y="45" width="3" height="10"/><rect x="536" y="46" width="3" height="8"/><rect x="544" y="47" width="3" height="6"/><rect x="552" y="48" width="3" height="4"/>
+  <rect x="560" y="48" width="640" height="4"/>
+</g>
+      </svg>
+
+      <div class="waveform-meta">
+        <span>T = 0s</span>
+        <span>T = 4s — CRACK</span>
+        <span>T = 7.2s — IMPACT</span>
+        <span>T = 12s</span>
+        <span>T = 20s</span>
+      </div>
+    </section>
+
+    <section class="map-section">
+      <div class="map-header">
+        <h2>Located.</h2>
+        <div class="meta">78.225°N · 15.633°E · SVALBARD, NO</div>
+      </div>
+      
+      <svg class="world-map" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <g stroke="#1A1A1A" stroke-width="0.3" opacity="0.15">
+          <line x1="0" y1="125" x2="1000" y2="125"/>
+          <line x1="0" y1="250" x2="1000" y2="250"/>
+          <line x1="0" y1="375" x2="1000" y2="375"/>
+          <line x1="166" y1="0" x2="166" y2="500"/>
+          <line x1="333" y1="0" x2="333" y2="500"/>
+          <line x1="500" y1="0" x2="500" y2="500"/>
+          <line x1="666" y1="0" x2="666" y2="500"/>
+          <line x1="833" y1="0" x2="833" y2="500"/>
+        </g>
+        <g fill="#1A1A1A" opacity="0.88" stroke="#1A1A1A" stroke-width="0.4">
+<path d="M 50,90 L 80,75 L 110,80 L 130,95 L 145,75 L 175,90 L 175,110 L 195,115 L 230,130 L 250,150 L 245,175 L 255,200 L 245,220 L 230,235 L 210,250 L 195,265 L 175,265 L 155,255 L 145,235 L 130,220 L 115,200 L 95,185 L 85,165 L 75,140 L 60,120 Z"/>
+<path d="M 295,55 L 320,50 L 340,60 L 345,85 L 335,110 L 315,115 L 295,105 L 290,80 Z"/>
+<path d="M 230,275 L 260,270 L 275,285 L 290,310 L 295,345 L 290,385 L 275,420 L 260,440 L 245,445 L 230,425 L 220,395 L 215,365 L 215,330 L 220,300 Z"/>
+<path d="M 450,115 L 475,108 L 495,115 L 510,108 L 530,115 L 545,125 L 555,140 L 540,155 L 520,160 L 495,155 L 475,160 L 460,150 L 450,135 Z"/>
+<path d="M 510,75 L 530,80 L 535,105 L 525,118 L 510,115 L 505,95 Z"/>
+<path d="M 460,180 L 490,178 L 520,182 L 545,195 L 555,215 L 565,245 L 570,280 L 565,310 L 555,335 L 545,355 L 525,370 L 505,378 L 490,370 L 475,355 L 465,330 L 460,300 L 458,270 L 460,240 L 462,210 Z"/>
+<path d="M 560,115 L 600,108 L 640,110 L 685,115 L 730,118 L 775,125 L 820,135 L 850,150 L 870,175 L 875,200 L 865,225 L 845,240 L 820,250 L 790,255 L 760,250 L 730,245 L 700,235 L 670,225 L 640,215 L 615,200 L 595,180 L 580,160 L 565,140 Z"/>
+<path d="M 670,225 L 695,230 L 710,250 L 705,275 L 695,290 L 680,285 L 670,265 L 668,245 Z"/>
+<path d="M 870,170 L 885,165 L 895,180 L 890,200 L 875,205 L 868,190 Z"/>
+<path d="M 805,355 L 850,348 L 880,355 L 895,370 L 890,390 L 870,400 L 840,400 L 815,390 L 800,375 Z"/>
+        </g>
+        <line x1="0" y1="250" x2="1000" y2="250" stroke="#1A1A1A" stroke-width="0.5" opacity="0.25" stroke-dasharray="4,4"/>
+        <text x="6" y="247" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.5">— EQUATOR 0°</text>
+
+        <circle cx="775" cy="245" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="783" y="241" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°001 DRIP</text>
+
+        <circle cx="85" cy="145" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="93" y="141" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°002 LEVIATHAN</text>
+
+        <circle cx="210" cy="237" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="155" y="248" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°003 CRICKET</text>
+
+        <circle cx="135" cy="100" r="5" fill="#D4A017" opacity="0.45"/>
+        <text x="143" y="96" font-family="monospace" font-size="8.5" fill="#1A1A1A" opacity="0.65">N°004 HOWL</text>
+        <g>
+          <circle cx="518" cy="55" r="20" fill="#1F3A5F" opacity="0.15">
+            <animate attributeName="r" values="14;28;14" dur="3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.3;0.05;0.3" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="518" cy="55" r="7" fill="#1F3A5F"/>
+          <circle cx="518" cy="55" r="3" fill="#D4A017"/>
+          <text x="531" y="51" font-family="'Playfair Display'" font-style="italic" font-size="14" fill="#1F3A5F" font-weight="700">RUPTURE</text>
+          <text x="531" y="66" font-family="monospace" font-size="9" fill="#1A1A1A" opacity="0.75">N°005 · SVALBARD</text>
+        </g>
+        <g stroke="#1F3A5F" stroke-width="0.5" opacity="0.4">
+          <line x1="518" y1="30" x2="518" y2="80"/>
+          <line x1="493" y1="55" x2="543" y2="55"/>
+        </g>
+        <text x="6" y="128" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.45">45°N</text>
+        <text x="6" y="378" font-family="monospace" font-size="8" fill="#1A1A1A" opacity="0.45">45°S</text>
+      </svg>
+
+      <div class="map-legend">
+        <span><span class="dot active"></span> SUBJECT N°005 — RUPTURE (PRESENT FOLIO)</span>
+        <span><span class="dot"></span> OTHER VOLUME I MEMBERS</span>
+        <span>— DATA: NORWEGIAN POLAR INSTITUTE · 2020–2026</span>
+      </div>
+    </section>
+
+    <section class="specimen">
+      <div class="specimen-cell">
+        <div class="num">240,000<span style="font-size:24px">t</span></div>
+        <div class="label">— Calving Mass</div>
+        <div class="desc">단일 캘빙 이벤트의 평균 질량. 그러나 매번 다르며, 그것이 RUPTURE을 즉흥적인 멤버로 만든다.</div>
+      </div>
+      <div class="specimen-cell">
+        <div class="num">5,400<span style="font-size:24px">km/h</span></div>
+        <div class="label">— Underwater Wave Speed</div>
+        <div class="desc">충격음이 해수에서 전파되는 속도. 수백 km 떨어진 고래들이 듣는 박자.</div>
+      </div>
+      <div class="specimen-cell">
+        <div class="num">−1×</div>
+        <div class="label">— Lifetime Performances</div>
+        <div class="desc">RUPTURE는 같은 음을 두 번 내지 않는다. 모든 캘빙은 단 한 번뿐인 즉흥 연주다.</div>
+      </div>
+    </section>
+  </article>
+
+  <footer class="detail-end">
+    <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 2px; opacity: 0.6;">— END OF FOLIO N°005 · END OF VOLUME I</div>
+    <button class="next-link" onclick="goToMain()">
+      <span class="num">RETURN</span>
+      To the catalog →
+    </button>
+  </footer>
+</div>
+
+
+<script>
+function goToDetail(member) {
+  const main = document.getElementById('page-main');
+  const detail = document.getElementById('page-' + member);
+  if (!detail) {
+    alert('이 멤버는 아직 준비 중입니다 (COMING SOON)');
+    return;
+  }
+  main.classList.remove('active');
+  main.classList.add('exiting');
+  setTimeout(() => {
+    detail.classList.add('active');
+    main.classList.remove('exiting');
+    window.scrollTo(0, 0);
+  }, 100);
+}
+
+function goToMain() {
+  const main = document.getElementById('page-main');
+  const allDetails = document.querySelectorAll('.page:not(#page-main)');
+  allDetails.forEach(d => {
+    d.classList.remove('active');
+    d.classList.add('exiting');
+  });
+  setTimeout(() => {
+    main.classList.add('active');
+    allDetails.forEach(d => d.classList.remove('exiting'));
+    window.scrollTo(0, 0);
+  }, 100);
+}
+
+// 키보드 ESC로 메인 복귀
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') goToMain();
+});
+</script>
+
+</body>
+</html>
